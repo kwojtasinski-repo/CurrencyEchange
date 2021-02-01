@@ -56,7 +56,7 @@ public class ExchangeAdaptee
 	    catch (JSONException e) 
 	    {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 	    }
 
 		return rate;
