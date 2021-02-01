@@ -83,7 +83,7 @@ public class ExchangeAdaptee
 		return response.toString();
 	}
 	
-	private static HttpURLConnection getApiConnection(String table, String code) throws IOException 
+	private HttpURLConnection getApiConnection(String table, String code) throws IOException 
 	{  
 	    URL restApiUrl = new URL("http://api.nbp.pl/api/exchangerates/rates/" + table + "/" + code + "/");
 	    HttpURLConnection restApiURLConnection = (HttpURLConnection) restApiUrl.openConnection();
