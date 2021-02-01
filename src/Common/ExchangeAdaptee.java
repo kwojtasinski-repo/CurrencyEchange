@@ -42,8 +42,8 @@ public class ExchangeAdaptee
 	    {
 	    	requestFromApi = new JSONObject(getJsonData(apiConnection));
 	    }
-	    catch (JSONException e) 
-	    {
+		catch (JSONException e) 
+		{
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
