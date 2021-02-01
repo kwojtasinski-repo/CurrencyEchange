@@ -41,7 +41,7 @@ public class ExchangeAdaptee
 	    try 
 	    {
 	    	requestFromApi = new JSONObject(getJsonData(apiConnection));
-		}
+	    }
 	    catch (JSONException e) 
 	    {
 			// TODO Auto-generated catch block
@@ -52,12 +52,12 @@ public class ExchangeAdaptee
 	    {
 			System.out.println(requestFromApi.getJSONArray("rates").getJSONObject(0));
 			rate = new BigDecimal(requestFromApi.getJSONArray("rates").getJSONObject(0).get("mid").toString());
-		}
+	    }
 	    catch (JSONException e) 
 	    {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+	    }
 
 		return rate;
 	}
