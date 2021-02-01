@@ -13,12 +13,12 @@ import org.json.JSONObject;
 
 public class ExchangeAdaptee 
 {
-	public BigDecimal calculateCurreny(BigDecimal currencyValue, String currencyCode)
+	public BigDecimal getCurrencyRate(String currencyCode) throws JSONException
 	{
-		return null;
+		return getRateFromApi(currencyCode);
 	}
 	
-	public BigDecimal getCurrencyRate(String currencyCode) throws JSONException
+	private BigDecimal getRateFromApi(String currencyCode)
 	{
 		BigDecimal rate = new BigDecimal("1");
 		HttpURLConnection apiConnection = null;
@@ -38,10 +38,36 @@ public class ExchangeAdaptee
 			return rate;
 		}
 		
+	    try 
+	    {
+	    	requestFromApi = new JSONObject(getJsonData(apiConnection));
+		}
+	    catch (JSONException e) 
+	    {
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+	    
+	    try 
+	    {
+			System.out.println(requestFromApi.getJSONArray("rates").getJSONObject(0));
+			rate = new BigDecimal(requestFromApi.getJSONArray("rates").getJSONObject(0).get("mid").toString());
+		}
+	    catch (JSONException e) 
+	    {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return rate;
+	}
+	
+	private String getJsonData(HttpURLConnection apiConnection)
+	{
+		StringBuilder response = new StringBuilder();
 		try
 		{
 		    BufferedReader br = new BufferedReader(new InputStreamReader(apiConnection.getInputStream(), "utf-8"));
-		    StringBuilder response = new StringBuilder();
 		    String responseLine = null;
 		    while ((responseLine = br.readLine()) != null) 
 		    {
@@ -49,23 +75,12 @@ public class ExchangeAdaptee
 		    }
 		    System.out.println("Response Request:");
 		    System.out.println(response.toString());
-		    try 
-		    {
-		    	requestFromApi = new JSONObject(response.toString());
-			}
-		    catch (JSONException e) 
-		    {
-				// TODO Auto-generated catch block
-				System.out.println(e.getMessage());
-			}
-		    System.out.println(requestFromApi.getJSONArray("rates").getJSONObject(0));
-		    rate = new BigDecimal(requestFromApi.getJSONArray("rates").getJSONObject(0).get("mid").toString());
 		}
 		catch(Exception ex)
 		{
 			System.out.println(ex.getMessage());
 		}
-		return rate;
+		return response.toString();
 	}
 	
 	private static HttpURLConnection getApiConnection(String table, String code) throws IOException 

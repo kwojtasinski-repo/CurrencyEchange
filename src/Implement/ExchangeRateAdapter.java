@@ -15,13 +15,22 @@ public class ExchangeRateAdapter implements ExchangeRate
 		// TODO Auto-generated constructor stub
 		_adaptee = adaptee;
 	}
-	
-	
+
 	@Override
 	public BigDecimal getCurrencyRate(String currencyCode) 
 	{
 		// TODO Auto-generated method stub
-		return null;
+		BigDecimal rate = new BigDecimal("1");
+		try 
+		{
+			rate = _adaptee.getCurrencyRate(currencyCode);
+		} 
+		catch (JSONException e) 
+		{
+			// TODO Auto-generated catch block
+			System.out.println(e.getMessage());
+		}
+		return rate;
 	}
 
 	@Override
@@ -29,9 +38,12 @@ public class ExchangeRateAdapter implements ExchangeRate
 	{
 		// TODO Auto-generated method stub
 		BigDecimal rate = new BigDecimal("1");
-		try {
+		try
+		{
 			rate = _adaptee.getCurrencyRate(currencyCode);
-		} catch (JSONException e) {
+		} 
+		catch (JSONException e) 
+		{
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
