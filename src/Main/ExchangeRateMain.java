@@ -2,13 +2,18 @@ package Main;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import Abstract.ExchangeRate;
 import Common.ExchangeAdaptee;
+import Entity.CurrencyTradeRate;
 import Implement.ExchangeRateAdapter;
+import Repository.CurrencyTradeRateRepository;
+import Repository.EntityRepository;
 
 public class ExchangeRateMain {
 
@@ -22,6 +27,7 @@ public class ExchangeRateMain {
 		currencyDict.put(1, "EUR");
 		currencyDict.put(2, "USD");
 		currencyDict.put(3, "CHF");
+		currencyDict.put(4, "GBP");
 		for(Integer key : currencyDict.keySet())
 		{
 			System.out.println("Press "+ key +" if you want to exchange " + currencyDict.get(key));
@@ -54,12 +60,26 @@ public class ExchangeRateMain {
 		{
 		    System.out.println("Error " + e.getMessage());
 		}
-		        
+		input.close();
+		
+		BigDecimal rate = exchangeRate.getCurrencyRate(currencyCode);
 		System.out.println("Exchange currency");
-		System.out.println("Currency for 1" + currencyCode + " is " + exchangeRate.getCurrencyRate(currencyCode) + " PLN");
+		System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
 		BigDecimal currencyExchanged = exchangeRate.calculateCurrency(money, currencyCode);
 		System.out.println("Current cash " + money + " " + currencyCode);
 		System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
+		EntityRepository<CurrencyTradeRate> currencyTradeRateRepo = new CurrencyTradeRateRepository();
+		CurrencyTradeRate tradeRate = new CurrencyTradeRate();
+		tradeRate.setId(0L);
+		tradeRate.setCashExchanged(currencyExchanged);
+		tradeRate.setCashToExchange(money);
+		tradeRate.setCurrencyCodeExchanging(currencyCode);
+		tradeRate.setCurrencyCodeMain("PLN");
+		tradeRate.setCurrencyRate(rate);
+        java.util.Date date = new java.util.Date();
+		tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+		Long id = currencyTradeRateRepo.add(tradeRate);
+		System.out.println("Id after insert to db " + id);
 	}
 
 }
