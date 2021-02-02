@@ -1,4 +1,4 @@
-package Common;
+package com.exchange.ExchangesRateMaven.Service.Common;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,27 +38,27 @@ public class ExchangeAdaptee
 			return rate;
 		}
 		
-	    try 
-	    {
-	    	requestFromApi = new JSONObject(getJsonData(apiConnection));
-	    }
+		try 
+		{
+			requestFromApi = new JSONObject(getJsonData(apiConnection));
+		}
 		catch (JSONException e) 
 		{
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
 		}
-	    
-	    try 
-	    {
+		
+		try 
+		{
 			System.out.println(requestFromApi.getJSONArray("rates").getJSONObject(0));
 			rate = new BigDecimal(requestFromApi.getJSONArray("rates").getJSONObject(0).get("mid").toString());
-	    }
-	    catch (JSONException e) 
-	    {
+		}
+		catch (JSONException e) 
+		{
 			// TODO Auto-generated catch block
 			System.out.println(e.getMessage());
-	    }
-
+		}
+		
 		return rate;
 	}
 	

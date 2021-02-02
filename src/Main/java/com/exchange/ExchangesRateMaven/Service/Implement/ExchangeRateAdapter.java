@@ -1,10 +1,8 @@
-package Implement;
+package com.exchange.ExchangesRateMaven.Service.Implement;
 import java.math.BigDecimal;
-
 import org.json.JSONException;
-
-import Abstract.ExchangeRate;
-import Common.ExchangeAdaptee;
+import com.exchange.ExchangesRateMaven.Service.Abstract.ExchangeRate;
+import com.exchange.ExchangesRateMaven.Service.Common.ExchangeAdaptee;
 
 public class ExchangeRateAdapter implements ExchangeRate
 {

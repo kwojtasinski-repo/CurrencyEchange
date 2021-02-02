@@ -1,4 +1,4 @@
-package Abstract;
+package com.exchange.ExchangesRateMaven.Service.Abstract;
 import java.math.BigDecimal;
 
 public interface ExchangeRate 
