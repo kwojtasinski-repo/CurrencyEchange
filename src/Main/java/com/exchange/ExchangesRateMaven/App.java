@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.stream.Collectors;
 
 import com.exchange.ExchangesRateMaven.Domain.Entity.CurrencyTradeRate;
 import com.exchange.ExchangesRateMaven.Domain.Interface.EntityRepository;
@@ -41,11 +42,7 @@ public class App
 		
 		while(choice != 6)
 		{
-			for(MenuAction menu : menuAction)
-			{
-				System.out.println(menu.getName());
-			}
-			
+			showMenu(menuAction, "Main");
 			choice = Integer.parseInt(input.next());
 			
 			switch(choice)
@@ -128,7 +125,8 @@ public class App
 					}
 					tradeRate = currencyTradeRateRepo.getById(id);
 					System.out.println(tradeRate.toString());
-					System.out.println("What do you want to choose?\n1. Money\n2. Curreny");
+					System.out.println("What do you want to choose?");
+					showMenu(menuAction, "Update");
 					int updateChoice = 0;
 					updateChoice = Integer.parseInt(input.next());
 					switch(updateChoice)
@@ -211,6 +209,8 @@ public class App
 				case 5:
 					System.out.println("Show all transactions");
 					List<CurrencyTradeRate> currencyTrades = currencyTradeRateRepo.getAll();
+					
+					currencyTrades.sort((c1, c2) -> c1.getId().compareTo(c2.getId()));
 					for(CurrencyTradeRate curr : currencyTrades)
 					{
 						System.out.println(curr.toString());
@@ -223,15 +223,22 @@ public class App
 		input.close();
     }
     
-    private static List<MenuAction> Initialize()
-    {
-    	List<MenuAction> menuAction = new ArrayList<MenuAction>();
-    	menuAction.add(new MenuAction(1, "1. Exchange the money"));
-    	menuAction.add(new MenuAction(2, "2. Get transaction by id"));
-    	menuAction.add(new MenuAction(3, "3. Update exchange"));
-    	menuAction.add(new MenuAction(4, "4. Delete transaction by id"));
-    	menuAction.add(new MenuAction(5, "5. Get all transactions"));
-    	menuAction.add(new MenuAction(6, "6. Exit"));
-    	return menuAction;
-    }
+	private static void showMenu(List<MenuAction> menuAction, String category)
+	{
+		menuAction.stream().filter(t->t.getCategory()==category).collect(Collectors.toList()).forEach(t-> System.out.println(t.getName()));
+	}
+	
+	private static List<MenuAction> Initialize()
+	{
+		List<MenuAction> menuAction = new ArrayList<MenuAction>();
+		menuAction.add(new MenuAction(1, "1. Exchange the money", "Main"));
+		menuAction.add(new MenuAction(2, "2. Get transaction by id", "Main"));
+		menuAction.add(new MenuAction(3, "3. Update exchange", "Main"));
+		menuAction.add(new MenuAction(4, "4. Delete transaction by id", "Main"));
+		menuAction.add(new MenuAction(5, "5. Get all transactions", "Main"));
+		menuAction.add(new MenuAction(6, "6. Exit", "Main"));
+		menuAction.add(new MenuAction(7, "1. Money", "Update"));
+		menuAction.add(new MenuAction(8, "2. Currency", "Update"));
+		return menuAction;
+	}
 }
