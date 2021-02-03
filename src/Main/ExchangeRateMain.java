@@ -54,7 +54,8 @@ public class ExchangeRateMain {
 		{
 		    System.out.println("Error " + e.getMessage());
 		}
-		        
+
+		input.close();
 		System.out.println("Exchange currency");
 		System.out.println("Currency for 1" + currencyCode + " is " + exchangeRate.getCurrencyRate(currencyCode) + " PLN");
 		BigDecimal currencyExchanged = exchangeRate.calculateCurrency(money, currencyCode);
