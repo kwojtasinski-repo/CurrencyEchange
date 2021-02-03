@@ -110,6 +110,7 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
 		try {
         	session.beginTransaction();
         	session.delete(currencyTradeRate);
+            session.getTransaction().commit();
         } 
         catch (Exception e) {
         	System.out.println(e.getMessage());

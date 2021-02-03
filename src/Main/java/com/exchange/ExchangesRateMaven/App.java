@@ -28,69 +28,210 @@ public class App
     	// TODO Auto-generated method stub
 		ExchangeAdaptee adaptee = new ExchangeAdaptee();
 		ExchangeRate exchangeRate = new ExchangeRateAdapter(adaptee);
-		System.out.println("Welcome in Currency Exchange\nPlease enter your currency");
 		Map<Integer, String> currencyDict = new HashMap<Integer, String>();
 		currencyDict.put(1, "EUR");
 		currencyDict.put(2, "USD");
 		currencyDict.put(3, "CHF");
 		currencyDict.put(4, "GBP");
-		for(Integer key : currencyDict.keySet())
-		{
-			System.out.println("Press "+ key +" if you want to exchange " + currencyDict.get(key));
-		}
+		List<MenuAction> menuAction = Initialize();
+		EntityRepository<CurrencyTradeRate> currencyTradeRateRepo = new CurrencyTradeRateRepository();
 		Scanner input = new Scanner(System.in);
-		Integer currencyDictKey = 2;
-		try 
-		{
-		    currencyDictKey = Integer.parseInt(input.next());
-		}
-		catch (Exception e) 
-		{
-		    System.out.println(e.getMessage());
-		}
+		Integer choice = 0;
+		System.out.println("Welcome in Currency Exchange");
 		
-		String currencyCode = "EUR";
-		if(currencyDict.get(currencyDictKey) != null)
+		while(choice != 6)
 		{
-			currencyCode = currencyDict.get(currencyDictKey);
-		}
-		
-		
-		BigDecimal money = new BigDecimal("100");
-		try 
-		{
-			System.out.println("Please Enter the money you want to exchange");
-			money = input.nextBigDecimal();
-		}
-		catch (Exception e) 
-		{
-		    System.out.println("Error " + e.getMessage());
+			for(MenuAction menu : menuAction)
+			{
+				System.out.println(menu.getName());
+			}
+			
+			choice = Integer.parseInt(input.next());
+			
+			switch(choice)
+			{
+				case 1:
+					System.out.println("Please enter your currency");
+					for(Integer key : currencyDict.keySet())
+					{
+						System.out.println("Press "+ key +" if you want to exchange " + currencyDict.get(key));
+					}
+					Integer currencyDictKey = 1;
+					try 
+					{
+					    currencyDictKey = Integer.parseInt(input.next());
+					}
+					catch (Exception e) 
+					{
+					    System.out.println(e.getMessage());
+					}
+					
+					String currencyCode = "EUR";
+					if(currencyDict.get(currencyDictKey) != null)
+					{
+						currencyCode = currencyDict.get(currencyDictKey);
+					}
+					
+					BigDecimal money = new BigDecimal("100");
+					try 
+					{
+						System.out.println("Please Enter the money you want to exchange");
+						money = input.nextBigDecimal();
+					}
+					catch (Exception e) 
+					{
+					    System.out.println("Error " + e.getMessage());
+					}
+					BigDecimal rate = exchangeRate.getCurrencyRate(currencyCode);
+					System.out.println("Exchange currency");
+					System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
+					BigDecimal currencyExchanged = exchangeRate.calculateCurrency(money, currencyCode);
+					System.out.println("Current cash " + money + " " + currencyCode);
+					System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
+					
+					CurrencyTradeRate tradeRate = new CurrencyTradeRate();
+					tradeRate.setId(0L);
+					tradeRate.setCashExchanged(currencyExchanged);
+					tradeRate.setCashToExchange(money);
+					tradeRate.setCurrencyCodeExchanging(currencyCode);
+					tradeRate.setCurrencyCodeMain("PLN");
+					tradeRate.setCurrencyRate(rate);
+					java.util.Date date = new java.util.Date();
+					tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+					Long id = currencyTradeRateRepo.add(tradeRate);
+					System.out.println("Id after insert to db " + id);
+					break;
+				case 2:
+					System.out.println("Enter id of transaction");
+					id = null;
+					try 
+					{
+					    id = Long.parseLong(input.next());
+					}
+					catch (Exception e) 
+					{
+					    System.out.println(e.getMessage());
+					}
+					tradeRate = currencyTradeRateRepo.getById(id);
+					System.out.println(tradeRate.toString());
+					break;
+				case 3:
+					System.out.println("Enter id of transaction");
+					id = null;
+					try 
+					{
+					    id = Long.parseLong(input.next());
+					}
+					catch (Exception e) 
+					{
+					    System.out.println(e.getMessage());
+					}
+					tradeRate = currencyTradeRateRepo.getById(id);
+					System.out.println(tradeRate.toString());
+					System.out.println("What do you want to choose?\n1. Money\n2. Curreny");
+					int updateChoice = 0;
+					updateChoice = Integer.parseInt(input.next());
+					switch(updateChoice)
+					{
+						case 1:
+							money = tradeRate.getCashToExchange();
+							try 
+							{
+								System.out.println("Please Enter the money you want to exchange");
+								money = input.nextBigDecimal();
+							}
+							catch (Exception e) 
+							{
+							    System.out.println("Error " + e.getMessage());
+							}
+							tradeRate.setCashToExchange(money);
+							rate = exchangeRate.getCurrencyRate(tradeRate.getCurrencyCodeExchanging());
+							currencyExchanged = exchangeRate.calculateCurrency(money, tradeRate.getCurrencyCodeExchanging());
+							tradeRate.setCashExchanged(currencyExchanged);
+							tradeRate.setCurrencyRate(rate);
+							date = new java.util.Date();
+							tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+							currencyTradeRateRepo.update(tradeRate);
+							System.out.println("Transaction updated");
+							System.out.println(tradeRate.toString());
+							break;
+						case 2:
+							currencyDictKey = 1;
+							try 
+							{
+								System.out.println("Please enter your currency");
+								for(Integer key : currencyDict.keySet())
+								{
+									System.out.println("Press "+ key +" if you want to exchange " + currencyDict.get(key));
+								}
+								currencyDictKey = Integer.parseInt(input.next());
+							}
+							catch (Exception e) 
+							{
+							    System.out.println(e.getMessage());
+							}
+							
+							currencyCode = tradeRate.getCurrencyCodeExchanging();
+							if(currencyDict.get(currencyDictKey) != null)
+							{
+								currencyCode = currencyDict.get(currencyDictKey);
+							}
+							tradeRate.setCurrencyCodeExchanging(currencyCode);
+							rate = exchangeRate.getCurrencyRate(currencyCode);
+							tradeRate.setCurrencyRate(rate);
+							System.out.println("Exchange currency");
+							System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
+							currencyExchanged = exchangeRate.calculateCurrency(tradeRate.getCashToExchange(), currencyCode);
+							tradeRate.setCashExchanged(currencyExchanged);
+							System.out.println("Current cash " + tradeRate.getCashToExchange() + " " + currencyCode);
+							System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
+							date = new java.util.Date();
+							tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+							currencyTradeRateRepo.update(tradeRate);
+							System.out.println("Transaction updated");
+							System.out.println(tradeRate.toString());
+							break;
+					}
+					break;
+				case 4:
+					System.out.println("Enter id of transaction");
+					id = null;
+					try 
+					{
+					    id = Long.parseLong(input.next());
+					}
+					catch (Exception e) 
+					{
+					    System.out.println(e.getMessage());
+					}
+					tradeRate = currencyTradeRateRepo.getById(id);
+					currencyTradeRateRepo.delete(tradeRate);
+					System.out.println(tradeRate.toString() + "\nDeleted successfully");
+					break;
+				case 5:
+					System.out.println("Show all transactions");
+					List<CurrencyTradeRate> currencyTrades = currencyTradeRateRepo.getAll();
+					for(CurrencyTradeRate curr : currencyTrades)
+					{
+						System.out.println(curr.toString());
+					}
+					break;
+				case 6:
+					break;
+			}
 		}
 		input.close();
-		
-		BigDecimal rate = exchangeRate.getCurrencyRate(currencyCode);
-		System.out.println("Exchange currency");
-		System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
-		BigDecimal currencyExchanged = exchangeRate.calculateCurrency(money, currencyCode);
-		System.out.println("Current cash " + money + " " + currencyCode);
-		System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
-		EntityRepository<CurrencyTradeRate> currencyTradeRateRepo = new CurrencyTradeRateRepository();
-		CurrencyTradeRate tradeRate = new CurrencyTradeRate();
-		tradeRate.setId(0L);
-		tradeRate.setCashExchanged(currencyExchanged);
-		tradeRate.setCashToExchange(money);
-		tradeRate.setCurrencyCodeExchanging(currencyCode);
-		tradeRate.setCurrencyCodeMain("PLN");
-		tradeRate.setCurrencyRate(rate);
-		java.util.Date date = new java.util.Date();
-		tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
-		Long id = currencyTradeRateRepo.add(tradeRate);
-		System.out.println("Id after insert to db " + id);
-		System.out.println("Show all records");
-		List<CurrencyTradeRate> currencyTrades = currencyTradeRateRepo.getAll();
-		for(CurrencyTradeRate curr : currencyTrades)
-		{
-			System.out.println(curr.toString());
-		}
+    }
+    
+    private static List<MenuAction> Initialize()
+    {
+    	List<MenuAction> menuAction = new ArrayList<MenuAction>();
+    	menuAction.add(new MenuAction(1, "1. Exchange the money"));
+    	menuAction.add(new MenuAction(2, "2. Get transaction by id"));
+    	menuAction.add(new MenuAction(3, "3. Update exchange"));
+    	menuAction.add(new MenuAction(4, "4. Delete transaction by id"));
+    	menuAction.add(new MenuAction(5, "5. Get all transactions"));
+    	menuAction.add(new MenuAction(6, "6. Exit"));
+    	return menuAction;
     }
 }
