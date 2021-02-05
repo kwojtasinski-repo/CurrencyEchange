@@ -13,8 +13,7 @@ import org.hibernate.cfg.Configuration;
 import com.exchange.ExchangesRateMaven.Domain.Entity.CurrencyTradeRate;
 import com.exchange.ExchangesRateMaven.Domain.Interface.EntityRepository;
 
-public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTradeRate>
-{
+public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTradeRate> {
     SessionFactory sessionFactory;
     
 	public CurrencyTradeRateRepository() {
@@ -28,18 +27,15 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
 		// TODO Auto-generated method stub
         Session session = sessionFactory.openSession();
         System.out.println("Creating currency trade");
-        try
-        {
+        try {
         	session.beginTransaction();
 			session.save(currencyTradeRate);
 			session.getTransaction().commit();
         }
-        catch(Exception ex)
-        {
+        catch(Exception ex) {
         	System.out.println(ex.getMessage());
         }
-        finally
-        {
+        finally {
         	session.close();
         }
 		return currencyTradeRate.getId();
@@ -57,8 +53,7 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
         catch (Exception e) {
         	System.out.println(e.getMessage());
         }
-        finally
-        {
+        finally {
         	session.close();
         }   
 		return currencyTradeRate;
@@ -76,8 +71,7 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
         catch (Exception e) {
         	System.out.println(e.getMessage());
         }
-        finally
-        {
+        finally {
         	session.close();
         } 
 		return currencyTradeRates;
@@ -96,8 +90,7 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
         catch (Exception e) {
         	System.out.println(e.getMessage());
         }
-        finally
-        {  
+        finally {  
         	session.close();
         }
 	}
@@ -115,8 +108,7 @@ public class CurrencyTradeRateRepository implements EntityRepository<CurrencyTra
         catch (Exception e) {
         	System.out.println(e.getMessage());
         }
-        finally
-        {
+        finally {
         	session.close();
         }
 	}

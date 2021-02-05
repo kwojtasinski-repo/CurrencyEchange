@@ -3,6 +3,7 @@ package com.exchange.ExchangesRateMaven;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +14,7 @@ import com.exchange.ExchangesRateMaven.Domain.Entity.CurrencyTradeRate;
 import com.exchange.ExchangesRateMaven.Domain.Interface.EntityRepository;
 import com.exchange.ExchangesRateMaven.Repository.CurrencyTradeRateRepository;
 import com.exchange.ExchangesRateMaven.Service.Abstract.ExchangeRate;
-import com.exchange.ExchangesRateMaven.Service.Common.ExchangeAdaptee;
+import com.exchange.ExchangesRateMaven.Service.Common.CurrencyRateFromApiJson;
 import com.exchange.ExchangesRateMaven.Service.Implement.ExchangeRateAdapter;
 
 
@@ -25,6 +26,11 @@ public class App
 {
     public static void main( String[] args )
     {
+    	 Date d=new Date(1997,3,10);  
+         long l=1000;  
+         d.setTime(l);  
+         System.out.println("time after settings : "+d.toString());  
+    	/*
     	// TODO Auto-generated method stub
     	// TODO Auto-generated method stub
 		ExchangeAdaptee adaptee = new ExchangeAdaptee();
@@ -82,19 +88,10 @@ public class App
 					BigDecimal rate = exchangeRate.getCurrencyRate(currencyCode);
 					System.out.println("Exchange currency");
 					System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
-					BigDecimal currencyExchanged = exchangeRate.calculateCurrency(money, currencyCode);
+					CurrencyTradeRate tradeRate = exchangeRate.calculateCurrency(money, currencyCode);
 					System.out.println("Current cash " + money + " " + currencyCode);
-					System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
-					
-					CurrencyTradeRate tradeRate = new CurrencyTradeRate();
-					tradeRate.setId(0L);
-					tradeRate.setCashExchanged(currencyExchanged);
-					tradeRate.setCashToExchange(money);
-					tradeRate.setCurrencyCodeExchanging(currencyCode);
-					tradeRate.setCurrencyCodeMain("PLN");
-					tradeRate.setCurrencyRate(rate);
-					java.util.Date date = new java.util.Date();
-					tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+					System.out.println("Cash exchanged " + tradeRate.getCashExchanged().setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
+
 					Long id = currencyTradeRateRepo.add(tradeRate);
 					System.out.println("Id after insert to db " + id);
 					break;
@@ -144,11 +141,7 @@ public class App
 							}
 							tradeRate.setCashToExchange(money);
 							rate = exchangeRate.getCurrencyRate(tradeRate.getCurrencyCodeExchanging());
-							currencyExchanged = exchangeRate.calculateCurrency(money, tradeRate.getCurrencyCodeExchanging());
-							tradeRate.setCashExchanged(currencyExchanged);
-							tradeRate.setCurrencyRate(rate);
-							date = new java.util.Date();
-							tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+							tradeRate = exchangeRate.calculateCurrency(money, tradeRate.getCurrencyCodeExchanging());
 							currencyTradeRateRepo.update(tradeRate);
 							System.out.println("Transaction updated");
 							System.out.println(tradeRate.toString());
@@ -179,12 +172,9 @@ public class App
 							tradeRate.setCurrencyRate(rate);
 							System.out.println("Exchange currency");
 							System.out.println("Currency for 1" + currencyCode + " is " + rate + " PLN");
-							currencyExchanged = exchangeRate.calculateCurrency(tradeRate.getCashToExchange(), currencyCode);
-							tradeRate.setCashExchanged(currencyExchanged);
+							tradeRate = exchangeRate.calculateCurrency(tradeRate.getCashToExchange(), currencyCode);
 							System.out.println("Current cash " + tradeRate.getCashToExchange() + " " + currencyCode);
-							System.out.println("Cash exchanged " + currencyExchanged.setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
-							date = new java.util.Date();
-							tradeRate.setCurrencyRateDate(new java.sql.Timestamp(date.getTime()));
+							System.out.println("Cash exchanged " + tradeRate.getCashExchanged().setScale(2, RoundingMode.HALF_UP) + " " + "PLN");
 							currencyTradeRateRepo.update(tradeRate);
 							System.out.println("Transaction updated");
 							System.out.println(tradeRate.toString());
@@ -240,5 +230,6 @@ public class App
 		menuAction.add(new MenuAction(7, "1. Money", "Update"));
 		menuAction.add(new MenuAction(8, "2. Currency", "Update"));
 		return menuAction;
-	}
+	}*/
+    }
 }

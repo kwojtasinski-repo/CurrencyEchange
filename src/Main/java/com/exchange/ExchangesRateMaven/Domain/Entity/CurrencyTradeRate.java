@@ -12,8 +12,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "employee")
-public class CurrencyTradeRate 
-{
+public class CurrencyTradeRate {
 	@Id
 	@Column(name = "id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -37,73 +36,59 @@ public class CurrencyTradeRate
 	@Column(name="cash_exchanged")
 	private BigDecimal cashExchanged;
 	
-	public Long getId() 
-	{  
+	public Long getId() {  
 	    return id;  
 	}
 	
-	public void setId(Long id) 
-	{  
+	public void setId(Long id) {  
 	    this.id = id;  
 	}
 	
-	public String getCurrencyCodeExchanging() 
-	{  
+	public String getCurrencyCodeExchanging() {  
 	    return currencyCodeExchanging;  
 	}
 	
-	public void setCurrencyCodeExchanging(String currencyCodeExchanging) 
-	{  
+	public void setCurrencyCodeExchanging(String currencyCodeExchanging) {  
 	    this.currencyCodeExchanging = currencyCodeExchanging;  
 	}
 	
-	public BigDecimal getCurrencyRate() 
-	{  
+	public BigDecimal getCurrencyRate() {  
 	    return currencyRate;  
 	}
 	
-	public void setCurrencyRate(BigDecimal currencyRate) 
-	{  
+	public void setCurrencyRate(BigDecimal currencyRate) {  
 	    this.currencyRate = currencyRate;  
 	}
 	
-	public String getCurrencyCodeMain() 
-	{  
+	public String getCurrencyCodeMain() {  
 	    return currencyCodeMain;  
 	}
 	
-	public void setCurrencyCodeMain(String currencyCodeMain) 
-	{  
+	public void setCurrencyCodeMain(String currencyCodeMain) {  
 	    this.currencyCodeMain = currencyCodeMain;  
 	}  
 	
-	public java.sql.Timestamp getCurrencyRateDate() 
-	{  
+	public java.sql.Timestamp getCurrencyRateDate() {  
 	    return currencyRateDate;  
 	}
 	
-	public void setCurrencyRateDate(java.sql.Timestamp currencyRateDate) 
-	{  
+	public void setCurrencyRateDate(java.sql.Timestamp currencyRateDate) {  
 	    this.currencyRateDate = currencyRateDate;  
 	}
 	
-	public BigDecimal getCashToExchange() 
-	{  
+	public BigDecimal getCashToExchange() {  
 	    return cashToExchange;  
 	}
 	
-	public void setCashToExchange(BigDecimal cashToExchange) 
-	{  
+	public void setCashToExchange(BigDecimal cashToExchange) {  
 	    this.cashToExchange = cashToExchange;  
 	}
 	
-	public BigDecimal getCashExchanged() 
-	{  
+	public BigDecimal getCashExchanged() {  
 	    return cashExchanged;  
 	}
 	
-	public void setCashExchanged(BigDecimal cashExchanged) 
-	{  
+	public void setCashExchanged(BigDecimal cashExchanged) {  
 	    this.cashExchanged = cashExchanged;  
 	}
 	
