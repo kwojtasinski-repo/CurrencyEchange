@@ -30,9 +30,10 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.exchange.ExchangesRateMaven.Service.Abstract.Adaptee;
+import com.exchange.ExchangesRateMaven.Service.Abstract.Service;
 import com.exchange.ExchangesRateMaven.Service.Common.Format;
 
-public class CurrencyRateFromApiJson implements Adaptee {
+public class CurrencyRateFromApiJson implements Service {
 	private Date currencyDate;
 	private String currencyCode;
 	private Format format;
@@ -57,23 +58,19 @@ public class CurrencyRateFromApiJson implements Adaptee {
 	}
 	
 	@Override
-	public String getDataAsString(String currencyCode, Date date) {
+	public String getData(String currencyCode, Date date) {
 		// TODO Auto-generated method stub
 		return getRateFromApi(currencyCode, Format.JSON, date);
 	}
 	
 	private String getRateFromApi(String currencyCode, Format format, Date date) {
 		HttpURLConnection apiConnection = null;
-		BigDecimal rate = null;
 		String response=null;
 		this.format = format;
 		try {
-			//checkDate(date);
 			apiConnection = getApiConnection("A", currencyCode, setDateFormat(date));
 			setDefaultHttpUrlConnectionSettings(apiConnection, format);
 			response = getResponseData(apiConnection);
-			//String response = getResponse(apiConnection);
-			//rate = getCurrencyRateFromResponse(response, format);
 		} catch (IOException ex) 	{
 			// TODO Auto-generated catch block
 			System.out.println(ex.getMessage());
@@ -81,21 +78,10 @@ public class CurrencyRateFromApiJson implements Adaptee {
 			// TODO Auto-generated catch block
 			System.out.println(ex.getMessage());
 		}
-	
+		
 		return response;
 	}
-	
-	private void checkDate(Date date) throws Exception {
-		Date lastArchivalCurrencyRateDate = new Date(1009926000000L);
-		Date currentDate = new Date();
-		if(date.before(lastArchivalCurrencyRateDate)) {
-			throw new Exception("Date cannot be before 2 January 2002");
-		}
-		if(date.after(new Date())) {
-			throw new Exception("Date cannot be after " + setDateFormat(currentDate));
-		}
-	}
-	
+		
 	private String setDateFormat(Date date) {
 		return new SimpleDateFormat("yyyy-MM-dd").format(date);
 	}
@@ -113,96 +99,11 @@ public class CurrencyRateFromApiJson implements Adaptee {
 			System.out.println("zawiera Brak danych");
 			return new String("");
 		}
-		if(txt.contains("zakres dat")) {
-			return new String("");
+		if(txt.contains("400 BadRequest")) {
+			throw new Exception("Check url address if correct. Response from Api is null");
 		}
 		return txt;
 	}
-	
-	private BigDecimal getCurrencyRateFromResponse(String txt, Format format) throws Exception {
-		// TODO Auto-generated method stub
-		return format.equals(Format.JSON) ? getCurrencyRateFromResponseJson(txt) : getCurrencyRateFromResponseXml(txt);
-	}
-
-	private BigDecimal getCurrencyRateFromResponseXml(String txt) throws Exception {
-		// TODO Auto-generated method stub
-		BigDecimal rate = null;
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-	    DocumentBuilder builder;
-	    Document document = null;
-		try {
-			builder = factory.newDocumentBuilder();
-			InputStream inputStream = new ByteArrayInputStream(txt.getBytes());
-		    document = builder.parse(inputStream);
-		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (SAXException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		document.getDocumentElement().normalize();
-		Element root = document.getDocumentElement();
-		System.out.println(root.getNodeName());
-
-		//all currencies
-		NodeList nList = document.getElementsByTagName("Rate");
-		for (int i = 0; i < nList.getLength(); i++){
-			Node node = nList.item(i);
-			System.out.println("");    //Just a separator
-			if (node.getNodeType() == Node.ELEMENT_NODE){
-			    //Print each employee's detail
-			    Element element = (Element) node;
-			    rate = new BigDecimal(element.getElementsByTagName("Mid").item(0).getTextContent());
-			    System.out.println("Mid : " + rate);
-			}
-		}
-		if(rate == null) {
-			throw new Exception("Check xml format : " + txt);
-		}
-		
-		return rate;
-	}
-
-	private BigDecimal getCurrencyRateFromResponseJson(String txt) throws Exception {
-		// TODO Auto-generated method stub
-		JSONObject requestFromApi = null;
-		BigDecimal rate = null;
-		requestFromApi = new JSONObject(txt);
-		System.out.println(txt);
-		System.out.println(requestFromApi);
-		
-		try {
-			System.out.println(requestFromApi.getJSONArray("rates").getJSONObject(0));
-			rate = new BigDecimal(requestFromApi.getJSONArray("rates").getJSONObject(0).get("mid").toString());
-		} catch (JSONException e)	{
-			// TODO Auto-generated catch block
-			System.out.println(e.getMessage());
-		}
-		
-		if(rate == null) {
-			throw new Exception("Check json format : " + txt);
-		}
-		
-		return rate;
-	}
-	
-	private String getResponse(HttpURLConnection apiConnection) throws Exception {
-		boolean gotResponse = false;
-		String response = null;
-		System.out.println(apiConnection.getRequestProperties());
-		while(!gotResponse) {
-			response = getResponseData(apiConnection);
-			//gotResponse = checkResponseString(response);
-			currencyDate = new Date(currencyDate.getTime() - Duration.ofDays(1).toMillis());
-			apiConnection = getApiConnection("A", currencyCode, setDateFormat(currencyDate));
-			setDefaultHttpUrlConnectionSettings(apiConnection, this.format);
-		}
-		return response;
-	}	
 	
 	private String getResponseData(HttpURLConnection apiConnection) throws Exception {
 		int code = 0;
@@ -265,5 +166,11 @@ public class CurrencyRateFromApiJson implements Adaptee {
 		apiConnection.setReadTimeout(15000);
 		System.out.println(apiConnection);
 		//return apiConnection;
+	}
+
+	@Override
+	public Format getFormat() {
+		// TODO Auto-generated method stub
+		return format;
 	}
 }

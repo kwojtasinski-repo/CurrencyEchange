@@ -1,21 +1,18 @@
 package com.exchange.ExchangesRateMaven.Service.Common;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 
-import com.exchange.ExchangesRateMaven.Service.Abstract.Adaptee;
+import com.exchange.ExchangesRateMaven.Service.Abstract.Service;
 
-public class CurrencyRateFromApiXml  implements Adaptee {
+public class CurrencyRateFromApiXml  implements Service {
 	private Date currencyDate;
 	private String currencyCode;
 	private Format format;
@@ -40,7 +37,7 @@ public class CurrencyRateFromApiXml  implements Adaptee {
 	}
 	
 	@Override
-	public String getDataAsString(String currencyCode, Date date) {
+	public String getData(String currencyCode, Date date) {
 		// TODO Auto-generated method stub
 		return getRateFromApi(currencyCode, Format.XML, date);
 	}
@@ -50,12 +47,9 @@ public class CurrencyRateFromApiXml  implements Adaptee {
 		String response=null;
 		this.format = format;
 		try {
-			//checkDate(date);
 			apiConnection = getApiConnection("A", currencyCode, setDateFormat(date));
 			setDefaultHttpUrlConnectionSettings(apiConnection, format);
 			response = getResponseData(apiConnection);
-			//String response = getResponse(apiConnection);
-			//rate = getCurrencyRateFromResponse(response, format);
 		} catch (IOException ex) 	{
 			// TODO Auto-generated catch block
 			System.out.println(ex.getMessage());
@@ -84,8 +78,8 @@ public class CurrencyRateFromApiXml  implements Adaptee {
 			System.out.println("zawiera Brak danych");
 			return new String("");
 		}
-		if(txt.contains("zakres dat")) {
-			return new String("");
+		if(txt.contains("400 BadRequest")) {
+			throw new Exception("Check url address if correct. Response from Api is null");
 		}
 		return txt;
 	}
@@ -153,4 +147,9 @@ public class CurrencyRateFromApiXml  implements Adaptee {
 		//return apiConnection;
 	}
 
+	@Override
+	public Format getFormat() {
+		// TODO Auto-generated method stub
+		return this.format;
+	}
 }

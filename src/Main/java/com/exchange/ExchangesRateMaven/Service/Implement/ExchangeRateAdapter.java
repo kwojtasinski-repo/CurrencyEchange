@@ -1,23 +1,17 @@
 package com.exchange.ExchangesRateMaven.Service.Implement;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
-import org.json.JSONException;
-
 import com.exchange.ExchangesRateMaven.Service.Abstract.Adaptee;
 import com.exchange.ExchangesRateMaven.Service.Abstract.ExchangeRate;
-import com.exchange.ExchangesRateMaven.Service.Common.JsonReader;
-import com.exchange.ExchangesRateMaven.Service.Common.XmlReader;
 
 public class ExchangeRateAdapter implements ExchangeRate {
 	private Adaptee _adaptee;
 	private Date date;
+	private Date dateFirst;
 	private String currencyCode;
 	// tutaj trzeba sprawdzic daty
 	// tak mysle ze powinno byc pole do ostatniej daty archiwizacji
@@ -39,9 +33,9 @@ public class ExchangeRateAdapter implements ExchangeRate {
 			checkDate(date);
 			checkCurrency(currencyCode);
 			this.date = date;
+			this.dateFirst = date;
 			this.currencyCode = currencyCode;
-			String response = getResponse();
-			rate= getRateFromResponse(response);
+			rate = getResponse();
 		}  catch (Exception e) {
 			// TODO Auto-generated catch block
 			throw new RuntimeException(e);
@@ -55,11 +49,11 @@ public class ExchangeRateAdapter implements ExchangeRate {
 		BigDecimal currencyExchanged = null;
 		try	{
 			checkDate(date);
-			checkCurrency(currencyCode);
+			currencyCode = checkCurrency(currencyCode);
 			this.date = date;
+			this.dateFirst = date;
 			this.currencyCode = currencyCode;
-			String response = getResponse();
-			BigDecimal rate= getRateFromResponse(response);
+			BigDecimal rate = getResponse();
 			if(rate !=null) {
 				currencyExchanged = currencyValue.multiply(rate);
 			}
@@ -87,7 +81,7 @@ public class ExchangeRateAdapter implements ExchangeRate {
 		if(date.before(dateBefore)) {
 			throw new Exception("Date cannot be before " + dateBefore); 
 		}
-		if(date.after(new Date())) {
+		if(date.after(currentDate)) {
 			throw new Exception("Date cannot be after " + setDateFormat(currentDate));
 		}
 	}
@@ -96,14 +90,17 @@ public class ExchangeRateAdapter implements ExchangeRate {
 		return new SimpleDateFormat("yyyy-MM-dd").format(date);
 	}
 	
-	private String getResponse() throws Exception {
-		String response = "";
-		while(response.length() == 0) { // or flag implemented in class shows that got response
-			response = _adaptee.getDataAsString(currencyCode, date);
+	private BigDecimal getResponse() throws Exception {
+		BigDecimal rate = null;
+		while(rate == null) { // or flag implemented in class shows that got response
+			if(date.before(_adaptee.getLastArchiveCurrencyRate())) {
+				throw new Exception("Check your file if currency code " + currencyCode + " for date "+ dateFirst + " exists or check if currency code exists. If exists check method getCurrencyRate if return correct in class defined structure of file");
+			}
+			rate = _adaptee.getCurrencyRate(currencyCode, date);
 			date = setDateDay(-1);// method set Day -1
 		}
-		return response;
-	}	
+		return rate;
+	}
 	
 	private Date setDateDay(int dayOfDate) { // set Date here not in other scope
 		// TODO Auto-generated method stub
@@ -113,11 +110,7 @@ public class ExchangeRateAdapter implements ExchangeRate {
 		cal.add(Calendar.DATE, dayOfDate);
 		return cal.getTime();
 	}
-	
-	private Date getStartOfDay(Date day) {
-	    return getStartOfDay(day, Calendar.getInstance());
-	  }
-	
+		
 	public static Date getStartOfDay(Date day, Calendar cal) {
 	    if (day == null)
 	      day = new Date();
@@ -128,24 +121,4 @@ public class ExchangeRateAdapter implements ExchangeRate {
 	    cal.set(Calendar.MILLISECOND, cal.getMinimum(Calendar.MILLISECOND));
 	    return cal.getTime();
 	  }
-	
-	private BigDecimal getRateFromResponse(String txt) throws Exception
-	{
-		BigDecimal rate = null;
-		if(txt.startsWith("<"))
-		{
-			//method to read xml
-			rate = XmlReader.getCurrencyRateFromXml(txt);
-			return rate;
-		}
-		else if(txt.startsWith("{") || txt.startsWith("["))
-		{
-			//method to read json
-			rate = JsonReader.getCurrencyRateFromJson(txt);
-			return rate;
-		}
-		else {
-			throw new Exception("Unhanled format"); 
-		}
-	}
 }
