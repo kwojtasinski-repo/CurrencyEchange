@@ -164,7 +164,7 @@ public abstract class ExchangeServiceNBP implements Service {
 			apiConnection.setRequestMethod("GET");
 			apiConnection.setDoOutput(true);
 			apiConnection.setRequestProperty("Content-Type", "application/" + format);
-			apiConnection.setRequestProperty("Accept", "application/json" + format);
+			apiConnection.setRequestProperty("Accept", "application/" + format);
 			apiConnection.setUseCaches(false);
 			apiConnection.setConnectTimeout(5000);
 			apiConnection.setReadTimeout(5000);
