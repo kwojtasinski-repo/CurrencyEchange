@@ -1,6 +1,8 @@
 package test;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;
@@ -12,16 +14,29 @@ import java.util.Locale;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.internal.MockitoCore;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import exception.CurrencyNotFound;
 import exception.DateException;
 import exception.UncheckedIOException;
+import implement.CurrencyRateFromFileJson;
+import implement.ExchangeManager;
+import implement.ExchangeServiceNBP;
 import implement.SalesDocumentService;
 
 /**
  * Unit test for simple App.
  */
+@RunWith(MockitoJUnitRunner.class)
 public class AppTest {
+	
+	@Mock
+	private CurrencyRateFromFileJson currencyRate;
+	
 	@Rule
     public final ExpectedException exception = ExpectedException.none();
     /**
@@ -87,5 +102,29 @@ public class AppTest {
 		
         //exception.expect(IllegalArgumentException.class);
 		BigDecimal moneyExchanged = documentService.insert(new BigDecimal("100.00"), currencyCode, date);
+    }
+    
+    @Test(expected=CurrencyNotFound.class)
+    public void shouldntReturnExchangedCurrency() {
+    	String currencyCode = "chf";
+    	String dateCurrency = "2021-02-10";
+    	String lastDateCurrency = "2021-02-09";
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
+		Date date = new Date();
+		Date lastDate = new Date();
+		try {
+			date = format.parse(dateCurrency);
+			lastDate = format.parse(lastDateCurrency);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ExchangeManager manager = new ExchangeManager(currencyRate);
+		BigDecimal cash = new BigDecimal("100.00");
+    	
+    	when(currencyRate.getLastCurrencyRateDate()).thenReturn(lastDate);
+    	when(currencyRate.getExchangeRate(currencyCode, date)).thenReturn(null);
+    	
+    	manager.exchangeCurrencyToPLN(currencyCode, date, cash);
     }
 }
