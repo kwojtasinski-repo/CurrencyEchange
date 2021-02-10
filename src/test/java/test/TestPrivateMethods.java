@@ -15,8 +15,7 @@ import common.ExchangeRate;
 import exception.CurrencyExchangeHttpException;
 
 import org.powermock.api.easymock.PowerMock;
-
-import implement.ExchangeServiceNBP;
+import implement.ExchangeWebServiceNBP;
 
 @RunWith(PowerMockRunner.class)
 public class TestPrivateMethods {
@@ -41,7 +40,7 @@ public class TestPrivateMethods {
 		rate.setCurrencyRate(new BigDecimal("500.00"));
 		
         // Mock only the modifyData method
-        ExchangeServiceNBP exchangeService = PowerMock.createPartialMock(ExchangeServiceNBP.class, modifyDataMethodName);
+        ExchangeWebServiceNBP exchangeService = PowerMock.createPartialMock(ExchangeWebServiceNBP.class, modifyDataMethodName);
       
         // Expect the private method call to "modifyData"
         PowerMock.expectPrivate(exchangeService, modifyDataMethodName, apiConnection).andReturn(true);

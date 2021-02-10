@@ -5,24 +5,27 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
+import abstracts.DataConverter;
 import abstracts.Manager;
 import abstracts.Service;
 import common.ExchangeRate;
 import common.ExchangedCurrency;
 import exception.CurrencyNotFound;
 import exception.DateException;
-import exception.UncheckedIOException;
 
 public class ExchangeManager implements Manager {
 	private Service service;
+	private DataConverter converter;
 	private Date date;
 	private Date dateFirst;
 	private String currencyCode;
 
-	public ExchangeManager(Service service)  {
+	public ExchangeManager(Service service, DataConverter converter)  {
 		// TODO Auto-generated constructor stub
 		// TODO Auto-generated constructor stub
 		this.service = service;
+		this.converter = converter;
+		service.setFormat(converter.getFormat());
 	}
 
 	@Override
@@ -73,7 +76,7 @@ public class ExchangeManager implements Manager {
 			if(date.before(service.getLastCurrencyRateDate())) {
 				throw new CurrencyNotFound("Check your file if currency code " + currencyCode + " for date "+ dateFirst + " exists or check if currency code exists. If exists check method getCurrencyRate if return correct in class defined structure of file");
 			}
-			rate = service.getExchangeRate(currencyCode, date);
+			rate = converter.getCurrencyRate(service.getExchangeRate(currencyCode, date));
 			date = setDateDay(-1);// method set Day -1
 		}
 		return rate;

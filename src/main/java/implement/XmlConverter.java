@@ -1,32 +1,22 @@
 package implement;
 
-import java.util.Date;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
+import abstracts.DataConverter;
 import common.ExchangeRate;
 import common.ExchangeRatesSeriesXml;
 import exception.ParsingExchangeRate;
 
-public class CurrencyRateFromNBPXml extends ExchangeServiceNBP {
-
-	public CurrencyRateFromNBPXml(Date lastCurrencyRateDate) {
-		super(lastCurrencyRateDate);
-		// TODO Auto-generated constructor stub
-	}
+public class XmlConverter implements DataConverter {
 
 	@Override
-	public ExchangeRate getCurrencyRate(String currencyCode, Date date) {
+	public ExchangeRate getCurrencyRate(String dataString) {
 		// TODO Auto-generated method stub
-		ExchangeRate rate = new ExchangeRate();
-		rate.setCurrencyCode(currencyCode);
-		rate.setCurrencyDate(date);
-		String data = getRateFromApi(rate);
 		try {
 			XmlMapper objectMapper = new XmlMapper();
-			ExchangeRatesSeriesXml xml = objectMapper.readValue(data, ExchangeRatesSeriesXml.class);
+			ExchangeRatesSeriesXml xml = objectMapper.readValue(dataString, ExchangeRatesSeriesXml.class);
 			ExchangeRate rateModified = new ExchangeRate();
 			rateModified.setCurrencyCode(xml.getCode());
 			rateModified.setCurrencyDate(xml.getRates().get(0).getEffectiveDate());

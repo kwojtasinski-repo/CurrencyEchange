@@ -16,11 +16,12 @@ import common.ExchangeRate;
 import exception.CurrencyExchangeHttpException;
 import exception.UncheckedIOException;
 
-public abstract class ExchangeServiceNBP implements Service {
+public class ExchangeWebServiceNBP implements Service {
 	private Date lastCurrencyRateDate;
 	private static final String RATE_URL = "http://api.nbp.pl/api/exchangerates/rates/A/";
+	private String format;
 	
-	public ExchangeServiceNBP(Date lastCurrencyRateDate) {
+	public ExchangeWebServiceNBP(Date lastCurrencyRateDate) {
 		// TODO Auto-generated constructor stub
 		this.lastCurrencyRateDate = lastCurrencyRateDate;
 	}
@@ -32,13 +33,15 @@ public abstract class ExchangeServiceNBP implements Service {
 	}
 	
 	@Override 
-	public ExchangeRate getExchangeRate(String currencyCode, Date date) {
+	public String getExchangeRate(String currencyCode, Date date) {
 		// TODO Auto-generated method stub
-		return getCurrencyRate(currencyCode, date);
+		ExchangeRate rate = new ExchangeRate();
+		rate.setCurrencyCode(currencyCode);
+		rate.setCurrencyDate(date);
+		return getRateFromApi(rate);
 	}
 	
-	public abstract ExchangeRate getCurrencyRate(String currencyCode, Date date);
-	public abstract String getFormat();
+	
 	
 	public String getRateFromApi(ExchangeRate rate) {
 		boolean isResponse = false;
@@ -176,5 +179,13 @@ public abstract class ExchangeServiceNBP implements Service {
 			// TODO Auto-generated catch block
 			throw new UncheckedIOException(ex.getMessage());
 		}
+	}
+
+	public String getFormat() {
+		return format;
+	}
+
+	public void setFormat(String format) {
+		this.format = format;
 	}
 }

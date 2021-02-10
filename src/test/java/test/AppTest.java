@@ -1,7 +1,6 @@
 package test;
 
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -16,16 +15,14 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.internal.MockitoCore;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import abstracts.DataConverter;
 import exception.CurrencyNotFound;
 import exception.DateException;
-import exception.UncheckedIOException;
-import implement.CurrencyRateFromFileJson;
 import implement.ExchangeManager;
-import implement.ExchangeServiceNBP;
+import implement.ExchangeWebServiceNBP;
+import implement.JsonConverter;
 import implement.SalesDocumentService;
 
 /**
@@ -35,7 +32,7 @@ import implement.SalesDocumentService;
 public class AppTest {
 	
 	@Mock
-	private CurrencyRateFromFileJson currencyRate;
+	private JsonConverter json;
 	
 	@Rule
     public final ExpectedException exception = ExpectedException.none();
@@ -88,8 +85,8 @@ public class AppTest {
     public void shouldntAcceptDate() {
     	SalesDocumentService documentService = new SalesDocumentService();
     	String currencyCode = "chf";
-    	String dateStringAfter = "2021-02-10"; 
-    	String dateStringBefore = "2021-02-04"; 
+    	String dateStringAfter = "2121-02-10"; 
+    	String dateStringBefore = "1921-02-04"; 
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date date = new Date();
 		try {
@@ -118,12 +115,12 @@ public class AppTest {
 		} catch (ParseException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		ExchangeManager manager = new ExchangeManager(currencyRate);
+		} // mock converter.getCurrencyRate
+		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(lastDate);
+		ExchangeManager manager = new ExchangeManager(currencyRate, json);
 		BigDecimal cash = new BigDecimal("100.00");
     	
-    	when(currencyRate.getLastCurrencyRateDate()).thenReturn(lastDate);
-    	when(currencyRate.getExchangeRate(currencyCode, date)).thenReturn(null);
+    	when(json.getCurrencyRate(currencyRate.getExchangeRate(currencyCode, date))).thenReturn(null);
     	
     	manager.exchangeCurrencyToPLN(currencyCode, date, cash);
     }
