@@ -8,13 +8,17 @@ public class ExchangedCurrency {
 	private Date currencyDate;
 	private BigDecimal currencyExchanged;
 	private BigDecimal currencyToExchange;
+	private BigDecimal currencyRate;
+	private String currencyCodeMain;
 	
-	public ExchangedCurrency(String currencyCode, Date currencyDate, BigDecimal currencyToExchange, BigDecimal currencyExchanged) {
+	public ExchangedCurrency(String currencyCode, Date currencyDate, BigDecimal currencyToExchange, BigDecimal currencyExchanged, BigDecimal currencyRate, String currencyCodeMain) {
 		// TODO Auto-generated constructor stub
 		this.currencyCode = currencyCode;
 		this.currencyDate = currencyDate;
 		this.currencyToExchange = currencyToExchange;
 		this.currencyExchanged = currencyExchanged;
+		this.currencyRate = currencyRate;
+		this.currencyCodeMain = currencyCodeMain;
 	}
 	
 	public String getCurrencyCode() {
@@ -40,5 +44,21 @@ public class ExchangedCurrency {
 	}
 	public void setCurrencyToExchange(BigDecimal currencyToExchange) {
 		this.currencyToExchange = currencyToExchange;
+	}
+
+	public BigDecimal getCurrencyRate() {
+		return currencyRate;
+	}
+
+	public void setCurrencyRate(BigDecimal currencyRate) {
+		this.currencyRate = currencyRate;
+	}
+
+	public String getCurrencyCodeMain() {
+		return currencyCodeMain;
+	}
+
+	public void setCurrencyCodeMain(String currencyCodeMain) {
+		this.currencyCodeMain = currencyCodeMain;
 	}
 }

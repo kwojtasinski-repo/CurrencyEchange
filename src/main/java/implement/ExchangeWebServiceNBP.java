@@ -44,26 +44,18 @@ public class ExchangeWebServiceNBP implements Service {
 	
 	
 	public String getRateFromApi(ExchangeRate rate) {
-		boolean isResponse = false;
-		String response = null;
-		HttpURLConnection apiConnection = null;
-		while(!isResponse) {
-			try {
-				apiConnection = getApiConnection(RATE_URL + rate.getCurrencyCode() + "/" + setDateFormat(rate.getCurrencyDate()) + "/");
-				setDefaultHttpUrlConnectionSettings(apiConnection, getFormat());
-				response = getResponseData(apiConnection);
-				if(checkIfResponseContainsData(response)) {
-					isResponse = true;
-				}
-				else {
-					rate.setCurrencyDate(setDateDay(rate.getCurrencyDate(), -1));
-				}
-			} catch (Exception ex) 	{
-				// TODO Auto-generated catch block
-				throw new UncheckedIOException(ex.getMessage());
-			}
+		try {
+			boolean isResponse = false;
+			String response = null;
+			HttpURLConnection apiConnection = null;
+			apiConnection = getApiConnection(RATE_URL + rate.getCurrencyCode() + "/" + setDateFormat(rate.getCurrencyDate()) + "/");
+			setDefaultHttpUrlConnectionSettings(apiConnection, getFormat());
+			response = getResponseData(apiConnection);
+			return response;
+		} catch (Exception ex) 	{
+			// TODO Auto-generated catch block
+			throw new UncheckedIOException(ex.getMessage());
 		}
-		return response;
 	}
 	
 	private Date setDateDay(Date date, int dayOfDate) { // set Date here not in other scope
@@ -97,7 +89,8 @@ public class ExchangeWebServiceNBP implements Service {
 			throw new CurrencyExchangeHttpException("Check url address if correct. Response from Api is null");
 		}
 		if(txt.contains("Brak danych")){
-			return new String("Currency rate for this day doesnt exist");
+			//return new String("Currency rate for this day doesnt exist");
+			return new String("");
 		}
 		if(txt.contains("400 BadRequest")) {
 			throw new CurrencyExchangeHttpException("Check url address if correct. Response from Api is null");

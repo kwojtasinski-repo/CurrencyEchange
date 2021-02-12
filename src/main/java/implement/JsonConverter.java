@@ -15,6 +15,9 @@ public class JsonConverter implements DataConverter {
 	public ExchangeRate getCurrencyRate(String dataString) {
 		// TODO Auto-generated method stub
 		try {
+			if(dataString.length()==0) {
+				return null;
+			}
 			JsonMapper objectMapper = new JsonMapper();
 			ExchangeRatesSeriesJson json = objectMapper.readValue(dataString, ExchangeRatesSeriesJson.class);
 			ExchangeRate rateModified = new ExchangeRate();

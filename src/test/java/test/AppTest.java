@@ -1,5 +1,6 @@
 package test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -17,13 +18,17 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import abstracts.CurrencyExchangeMapper;
 import abstracts.DataConverter;
+import common.ExchangedCurrency;
+import entity.CurrencyExchange;
 import exception.CurrencyNotFound;
 import exception.DateException;
 import implement.ExchangeManager;
 import implement.ExchangeWebServiceNBP;
 import implement.JsonConverter;
 import implement.SalesDocumentService;
+import repository.CurrencyRepository;
 
 /**
  * Unit test for simple App.
@@ -117,11 +122,28 @@ public class AppTest {
 			e.printStackTrace();
 		} // mock converter.getCurrencyRate
 		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(lastDate);
-		ExchangeManager manager = new ExchangeManager(currencyRate, json);
+		CurrencyRepository repo = new CurrencyRepository();
+		ExchangeManager manager = new ExchangeManager(currencyRate, json, repo);
 		BigDecimal cash = new BigDecimal("100.00");
     	
     	when(json.getCurrencyRate(currencyRate.getExchangeRate(currencyCode, date))).thenReturn(null);
     	
     	manager.exchangeCurrencyToPLN(currencyCode, date, cash);
+    }
+
+    @Test
+    public void shouldMapExchangedCurrencyToCurrencyExchange() {
+        //given
+    	Date date = new Date();
+        ExchangedCurrency exchangedCurrency = new ExchangedCurrency("EUR", date, new BigDecimal("5000.00"), new BigDecimal("22404.50"), new BigDecimal("4.48"), "PLN");
+     
+        //when
+        CurrencyExchange currencyExchange = CurrencyExchangeMapper.INSTANCE.mapToCurrencyExchange( exchangedCurrency );
+     
+        //then
+        assertThat( currencyExchange ).isNotNull();
+        assertThat( currencyExchange.getCurrencyCode() ).isEqualTo( "EUR" );
+        assertThat( currencyExchange.getCurrencyDate() ).isEqualTo( date );
+        assertThat( currencyExchange.getCurrencyToExchange() ).isEqualTo( new BigDecimal("5000.00") );
     }
 }
