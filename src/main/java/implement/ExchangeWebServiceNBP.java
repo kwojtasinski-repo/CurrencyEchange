@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -12,7 +13,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import abstracts.Service;
-import common.ExchangeRate;
+import common.ExchangeRateDto;
 import exception.CurrencyExchangeHttpException;
 import exception.UncheckedIOException;
 
@@ -35,7 +36,7 @@ public class ExchangeWebServiceNBP implements Service {
 	@Override 
 	public String getExchangeRate(String currencyCode, Date date) {
 		// TODO Auto-generated method stub
-		ExchangeRate rate = new ExchangeRate();
+		ExchangeRateDto rate = new ExchangeRateDto();
 		rate.setCurrencyCode(currencyCode);
 		rate.setCurrencyDate(date);
 		return getRateFromApi(rate);
@@ -43,7 +44,7 @@ public class ExchangeWebServiceNBP implements Service {
 	
 	
 	
-	public String getRateFromApi(ExchangeRate rate) {
+	public String getRateFromApi(ExchangeRateDto rate) {
 		try {
 			boolean isResponse = false;
 			String response = null;
@@ -132,7 +133,7 @@ public class ExchangeWebServiceNBP implements Service {
 			return resp;
 		} catch (SocketTimeoutException e) {
 			// TODO Auto-generated catch block
-			throw new CurrencyExchangeHttpException(e.getMessage());
+			throw new CurrencyExchangeHttpException("Connection timed out. Check your url");
 		} catch(IOException ex) {
 			throw new CurrencyExchangeHttpException(ex.getMessage());
 		} catch (Exception e) {
@@ -147,8 +148,8 @@ public class ExchangeWebServiceNBP implements Service {
 		    System.out.println("restApiUrl = " + restApiUrl);
 		    System.out.println("HttpURLConnection " + restApiURLConnection);
 		    return restApiURLConnection;
-		} catch (IOException e) {
-			throw new CurrencyExchangeHttpException(e.getMessage());
+		} catch (MalformedURLException e) {
+			throw new CurrencyExchangeHttpException("Please check your url address");
 		} catch (Exception ex) 	{
 			// TODO Auto-generated catch block
 			throw new UncheckedIOException(ex.getMessage());

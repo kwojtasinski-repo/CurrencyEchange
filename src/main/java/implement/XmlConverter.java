@@ -5,19 +5,19 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import abstracts.DataConverter;
-import common.ExchangeRate;
+import common.ExchangeRateDto;
 import common.ExchangeRatesSeriesXml;
 import exception.ParsingExchangeRate;
 
 public class XmlConverter implements DataConverter {
 
 	@Override
-	public ExchangeRate getCurrencyRate(String dataString) {
+	public ExchangeRateDto getCurrencyRate(String dataString) {
 		// TODO Auto-generated method stub
 		try {
 			XmlMapper objectMapper = new XmlMapper();
 			ExchangeRatesSeriesXml xml = objectMapper.readValue(dataString, ExchangeRatesSeriesXml.class);
-			ExchangeRate rateModified = new ExchangeRate();
+			ExchangeRateDto rateModified = new ExchangeRateDto();
 			rateModified.setCurrencyCode(xml.getCode());
 			rateModified.setCurrencyDate(xml.getRates().get(0).getEffectiveDate());
 			rateModified.setCurrencyRate(xml.getRates().get(0).getMid());

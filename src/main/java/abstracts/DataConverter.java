@@ -1,8 +1,8 @@
 package abstracts;
 
-import common.ExchangeRate;
+import common.ExchangeRateDto;
 
 public interface DataConverter {
-	ExchangeRate getCurrencyRate(String dataString);
+	ExchangeRateDto getCurrencyRate(String dataString);
 	String getFormat();
 }

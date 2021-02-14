@@ -4,9 +4,9 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
-import common.ExchangeRate;
-import common.ExchangedCurrency;
-import entity.CurrencyExchange;
+import common.CountryDto;
+import common.ExchangeRateDto;
+import entity.Country;
 import entity.CurrencyRate;
 
 @Mapper
@@ -14,13 +14,13 @@ public interface CurrencyExchangeMapper {
 
 	CurrencyExchangeMapper INSTANCE = Mappers.getMapper(CurrencyExchangeMapper.class);
 	
-    @Mapping(target = "id", ignore = true)
-	CurrencyExchange mapToCurrencyExchange(ExchangedCurrency currencyExchange);
+    @Mapping(target = "currencyId", ignore = true)
+    CurrencyRate mapToCurrencyRate(ExchangeRateDto currencyRate);
     
-    ExchangedCurrency mapToExchangedCurrency(CurrencyExchange currencyExchange);
+    ExchangeRateDto mapToExchangeRateDto(CurrencyRate currencyRate);
     
-    @Mapping(target = "id", ignore = true)
-    CurrencyRate mapToCurrencyRate(ExchangeRate currencyRate);
+    @Mapping(target = "countryId", ignore = true)
+    Country mapToCountry(CountryDto countryDto);
     
-    ExchangeRate mapToExchangeRate(CurrencyRate currencyRate);
+    CountryDto mapToCountryDto(Country country);
 }

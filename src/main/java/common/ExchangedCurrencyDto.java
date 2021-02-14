@@ -3,7 +3,7 @@ package common;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ExchangedCurrency {
+public class ExchangedCurrencyDto {
 	private String currencyCode;
 	private Date currencyDate;
 	private BigDecimal currencyExchanged;
@@ -11,7 +11,7 @@ public class ExchangedCurrency {
 	private BigDecimal currencyRate;
 	private String currencyCodeMain;
 	
-	public ExchangedCurrency(String currencyCode, Date currencyDate, BigDecimal currencyToExchange, BigDecimal currencyExchanged, BigDecimal currencyRate, String currencyCodeMain) {
+	public ExchangedCurrencyDto(String currencyCode, Date currencyDate, BigDecimal currencyToExchange, BigDecimal currencyExchanged, BigDecimal currencyRate, String currencyCodeMain) {
 		// TODO Auto-generated constructor stub
 		this.currencyCode = currencyCode;
 		this.currencyDate = currencyDate;

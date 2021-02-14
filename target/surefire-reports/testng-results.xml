@@ -1,43 +1,65 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testng-results ignored="0" total="7" passed="7" failed="0" skipped="0">
+<testng-results ignored="0" total="12" passed="12" failed="0" skipped="0">
   <reporter-output>
   </reporter-output>
-  <suite started-at="2021-02-12T11:28:48 CET" name="Surefire suite" finished-at="2021-02-12T11:28:56 CET" duration-ms="8281">
+  <suite started-at="2021-02-14T21:41:40 CET" name="Surefire suite" finished-at="2021-02-14T21:41:47 CET" duration-ms="7821">
     <groups>
     </groups>
-    <test started-at="2021-02-12T11:28:48 CET" name="Surefire test" finished-at="2021-02-12T11:28:56 CET" duration-ms="8281">
-      <class name="test.AppTest">
-        <test-method signature="shouldntFoundCurrency()" started-at="2021-02-12T11:28:48 CET" name="shouldntFoundCurrency" finished-at="2021-02-12T11:28:50 CET" duration-ms="1638" status="PASS">
+    <test started-at="2021-02-14T21:41:40 CET" name="Surefire test" finished-at="2021-02-14T21:41:47 CET" duration-ms="7821">
+      <class name="test.ExchangeWebServiceNBPTests">
+        <test-method signature="shouldThrowExceptionMessageInvalidUrl() throws java.lang.Exception" started-at="2021-02-14T21:41:42 CET" name="shouldThrowExceptionMessageInvalidUrl" finished-at="2021-02-14T21:41:42 CET" duration-ms="56" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldThrowExceptionMessageInvalidUrl -->
+        <test-method signature="shouldThrowExceptionMessage404() throws java.lang.Exception" started-at="2021-02-14T21:41:42 CET" name="shouldThrowExceptionMessage404" finished-at="2021-02-14T21:41:42 CET" duration-ms="53" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldThrowExceptionMessage404 -->
+        <test-method signature="shouldThrowExceptionMessage400() throws java.lang.Exception" started-at="2021-02-14T21:41:42 CET" name="shouldThrowExceptionMessage400" finished-at="2021-02-14T21:41:42 CET" duration-ms="51" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldThrowExceptionMessage400 -->
+        <test-method signature="shouldThrowExceptionMessageTimeoutException() throws java.lang.Exception" started-at="2021-02-14T21:41:42 CET" name="shouldThrowExceptionMessageTimeoutException" finished-at="2021-02-14T21:41:47 CET" duration-ms="5068" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldThrowExceptionMessageTimeoutException -->
+        <test-method signature="shouldThrowExceptionMessageCheckUrl() throws java.lang.Exception" started-at="2021-02-14T21:41:42 CET" name="shouldThrowExceptionMessageCheckUrl" finished-at="2021-02-14T21:41:42 CET" duration-ms="54" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldThrowExceptionMessageCheckUrl -->
+      </class> <!-- test.ExchangeWebServiceNBPTests -->
+      <class name="test.ExchangeManagerTests">
+        <test-method signature="shouldntFoundCurrency() throws java.text.ParseException" started-at="2021-02-14T21:41:40 CET" name="shouldntFoundCurrency" finished-at="2021-02-14T21:41:40 CET" duration-ms="154" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- shouldntFoundCurrency -->
-        <test-method signature="shouldntAcceptDate()" started-at="2021-02-12T11:28:48 CET" name="shouldntAcceptDate" finished-at="2021-02-12T11:28:51 CET" duration-ms="2568" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- shouldntAcceptDate -->
-        <test-method signature="shouldntReturnExchangedCurrency()" started-at="2021-02-12T11:28:48 CET" name="shouldntReturnExchangedCurrency" finished-at="2021-02-12T11:28:50 CET" duration-ms="2140" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- shouldntReturnExchangedCurrency -->
-        <test-method signature="shouldMapExchangedCurrencyToCurrencyExchange()" started-at="2021-02-12T11:28:48 CET" name="shouldMapExchangedCurrencyToCurrencyExchange" finished-at="2021-02-12T11:28:51 CET" duration-ms="2611" status="PASS">
-          <reporter-output>
-          </reporter-output>
-        </test-method> <!-- shouldMapExchangedCurrencyToCurrencyExchange -->
-        <test-method signature="shouldAnswerWithTrue()" started-at="2021-02-12T11:28:48 CET" name="shouldAnswerWithTrue" finished-at="2021-02-12T11:28:50 CET" duration-ms="1636" status="PASS">
+        <test-method signature="shouldAnswerWithTrue()" started-at="2021-02-14T21:41:40 CET" name="shouldAnswerWithTrue" finished-at="2021-02-14T21:41:40 CET" duration-ms="172" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- shouldAnswerWithTrue -->
-        <test-method signature="shouldBeInvalidCurrency()" started-at="2021-02-12T11:28:48 CET" name="shouldBeInvalidCurrency" finished-at="2021-02-12T11:28:51 CET" duration-ms="2359" status="PASS">
+        <test-method signature="shouldBeInvalidCurrency()" started-at="2021-02-14T21:41:40 CET" name="shouldBeInvalidCurrency" finished-at="2021-02-14T21:41:42 CET" duration-ms="2266" status="PASS">
           <reporter-output>
           </reporter-output>
         </test-method> <!-- shouldBeInvalidCurrency -->
-      </class> <!-- test.AppTest -->
-      <class name="test.TestPrivateMethods">
-        <test-method signature="testReplaceData() throws java.lang.Exception" started-at="2021-02-12T11:28:51 CET" name="testReplaceData" finished-at="2021-02-12T11:28:56 CET" duration-ms="5342" status="PASS">
+        <test-method signature="shouldntReturnExchangedCurrencyFromMockedConverterReturningNull() throws java.text.ParseException" started-at="2021-02-14T21:41:40 CET" name="shouldntReturnExchangedCurrencyFromMockedConverterReturningNull" finished-at="2021-02-14T21:41:42 CET" duration-ms="2265" status="PASS">
           <reporter-output>
           </reporter-output>
-        </test-method> <!-- testReplaceData -->
-      </class> <!-- test.TestPrivateMethods -->
+        </test-method> <!-- shouldntReturnExchangedCurrencyFromMockedConverterReturningNull -->
+        <test-method signature="shouldReturnCurrencyFromMockedRepositoryReturningObject() throws java.text.ParseException" started-at="2021-02-14T21:41:40 CET" name="shouldReturnCurrencyFromMockedRepositoryReturningObject" finished-at="2021-02-14T21:41:40 CET" duration-ms="171" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldReturnCurrencyFromMockedRepositoryReturningObject -->
+        <test-method signature="shouldntAcceptDate() throws java.text.ParseException" started-at="2021-02-14T21:41:40 CET" name="shouldntAcceptDate" finished-at="2021-02-14T21:41:42 CET" duration-ms="2269" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldntAcceptDate -->
+      </class> <!-- test.ExchangeManagerTests -->
+      <class name="test.JsonConverterTests">
+        <test-method signature="shouldntConvertToObject()" started-at="2021-02-14T21:41:47 CET" name="shouldntConvertToObject" finished-at="2021-02-14T21:41:47 CET" duration-ms="190" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- shouldntConvertToObject -->
+      </class> <!-- test.JsonConverterTests -->
     </test> <!-- Surefire test -->
   </suite> <!-- Surefire suite -->
 </testng-results>

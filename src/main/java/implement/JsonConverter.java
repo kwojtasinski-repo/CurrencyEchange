@@ -5,14 +5,14 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import abstracts.DataConverter;
-import common.ExchangeRate;
+import common.ExchangeRateDto;
 import common.ExchangeRatesSeriesJson;
 import exception.ParsingExchangeRate;
 
 public class JsonConverter implements DataConverter {
 
 	@Override
-	public ExchangeRate getCurrencyRate(String dataString) {
+	public ExchangeRateDto getCurrencyRate(String dataString) {
 		// TODO Auto-generated method stub
 		try {
 			if(dataString.length()==0) {
@@ -20,15 +20,15 @@ public class JsonConverter implements DataConverter {
 			}
 			JsonMapper objectMapper = new JsonMapper();
 			ExchangeRatesSeriesJson json = objectMapper.readValue(dataString, ExchangeRatesSeriesJson.class);
-			ExchangeRate rateModified = new ExchangeRate();
+			ExchangeRateDto rateModified = new ExchangeRateDto();
 			rateModified.setCurrencyCode(json.getCode());
 			rateModified.setCurrencyDate(json.getRates().get(0).getEffectiveDate());
 			rateModified.setCurrencyRate(json.getRates().get(0).getMid());
 			return rateModified;
 		} catch(JsonMappingException e) {
-			throw new ParsingExchangeRate(e.getMessage()); 
+			throw new ParsingExchangeRate("While conversion error occurred. Please check your data format"); 
 		} catch(JsonProcessingException e) {
-			throw new ParsingExchangeRate(e.getMessage());
+			throw new ParsingExchangeRate("While conversion error occurred. Please check your data format");
 		}
 	}
 

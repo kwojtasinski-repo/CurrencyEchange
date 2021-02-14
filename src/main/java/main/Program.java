@@ -13,8 +13,8 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import common.ExchangeRate;
-import common.ExchangedCurrency;
+import common.ExchangeRateDto;
+import common.ExchangedCurrencyDto;
 import implement.ExchangeManager;
 import implement.ExchangeWebServiceNBP;
 import implement.JsonConverter;
@@ -29,7 +29,7 @@ import entity.CurrencyRate;
 public class Program {
 	
 	public static void main(String[] args) {
-		Service serviceNBP = new ExchangeWebServiceNBP(setDate("2002-01-02"));
+		/*Service serviceNBP = new ExchangeWebServiceNBP(setDate("2002-01-02"));
 		DataConverter json = new JsonConverter();
 		CurrencyRepository repo = new CurrencyRepository();
 		ExchangeManager manager = new ExchangeManager(serviceNBP, json, repo);
@@ -232,7 +232,7 @@ public class Program {
 					break;
 			}
 		}
-		input.close();
+		input.close();*/
 	}
 	
 	private static void showMenu(List<MenuAction> menuAction, String category)

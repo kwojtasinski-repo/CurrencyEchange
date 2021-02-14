@@ -1,2 +1,3 @@
-test\TestPrivateMethods.class
-test\AppTest.class
+test\ExchangeManagerTests.class
+test\JsonConverterTests.class
+test\ExchangeWebServiceNBPTests.class

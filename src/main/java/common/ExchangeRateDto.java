@@ -3,7 +3,7 @@ package common;
 import java.math.BigDecimal;
 import java.util.Date;
 
-public class ExchangeRate {
+public class ExchangeRateDto {
 	private String currencyCode;
 	private Date currencyDate;
 	private BigDecimal currencyRate;

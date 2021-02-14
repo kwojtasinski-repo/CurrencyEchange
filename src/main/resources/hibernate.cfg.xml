@@ -27,6 +27,7 @@
 	    <property name="current_session_context_class">thread</property>
 	 
         <!-- Annotated entity classes -->
+        <mapping class="entity.Country"/>
         <mapping class="entity.CurrencyExchange"/>
         <mapping class="entity.CurrencyRate"/>
         

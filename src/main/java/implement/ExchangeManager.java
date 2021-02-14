@@ -5,14 +5,19 @@ import java.util.Calendar;
 import java.util.Currency;
 import java.util.Date;
 
+import abstracts.CountryConverter;
 import abstracts.CurrencyExchangeMapper;
 import abstracts.CurrencyExchangeRateRepository;
 import abstracts.DataConverter;
 import abstracts.Manager;
 import abstracts.Service;
-import common.ExchangeRate;
-import common.ExchangedCurrency;
+import common.CountryDto;
+import common.CurrencyCodesWithCountries;
+import common.ExchangeRateDto;
+import common.ExchangedCurrencyDto;
+import entity.Country;
 import entity.CurrencyExchange;
+import entity.CurrencyExchangeKey;
 import entity.CurrencyRate;
 import exception.CurrencyNotFound;
 import exception.DateException;
@@ -23,41 +28,50 @@ public class ExchangeManager implements Manager {
 	private Date date;
 	private Date dateFirst;
 	private String currencyCode;
-	CurrencyExchangeRateRepository repo;
+	private CurrencyExchangeRateRepository repo;
+	private CountryConverter countryService;
 
 	public ExchangeManager(Service service, DataConverter converter, CurrencyExchangeRateRepository repo)  {
-		// TODO Auto-generated constructor stub
 		// TODO Auto-generated constructor stub
 		this.service = service;
 		this.converter = converter;
 		service.setFormat(converter.getFormat());
 		this.repo = repo;
 	}
+	
+	public ExchangeManager(Service service, DataConverter converter, CurrencyExchangeRateRepository repo, CountryConverter countryService)  {
+		// TODO Auto-generated constructor stub
+		this.service = service;
+		this.converter = converter;
+		service.setFormat(converter.getFormat());
+		this.repo = repo;
+		this.countryService = countryService;
+	}
 
 	@Override
-	public ExchangedCurrency exchangeCurrencyToPLN(String currencyCode, Date date, BigDecimal value) {
+	public ExchangedCurrencyDto exchangeCurrencyToPLN(String currencyCode, Date date, BigDecimal value) {
 		// TODO Auto-generated method stub
 		checkDate(date);
 		this.currencyCode = checkCurrency(currencyCode);
 		this.date = date;
 		this.dateFirst = date;
-		ExchangeRate rate = getResponse();
-		ExchangedCurrency currency = new ExchangedCurrency(rate.getCurrencyCode(), rate.getCurrencyDate(), value, rate.getCurrencyRate().multiply(value), rate.getCurrencyRate(), "PLN");
+		ExchangeRateDto rate = getResponse();
+		ExchangedCurrencyDto currency = new ExchangedCurrencyDto(rate.getCurrencyCode(), rate.getCurrencyDate(), value, rate.getCurrencyRate().multiply(value), rate.getCurrencyRate(), "PLN");
 		return currency;
 	}
 	
 	@Override
-	public ExchangeRate getCurrencyRate(String currencyCode, Date date, BigDecimal value) {
+	public ExchangeRateDto getCurrencyRate(String currencyCode, Date date, BigDecimal value) {
 		// TODO Auto-generated method stub
 		checkDate(date);
 		this.currencyCode = checkCurrency(currencyCode);
 		this.date = date;
 		this.dateFirst = date;
-		ExchangeRate rate = getResponse();
+		ExchangeRateDto rate = getResponse();
 		return rate;
 	}
 	
-	private String checkCurrency(String currencyCode) {
+	public String checkCurrency(String currencyCode) {
 		if(currencyCode != null && currencyCode.length() != 3) {
 			throw new IllegalArgumentException("Invalid currency code");
 		}
@@ -71,7 +85,10 @@ public class ExchangeManager implements Manager {
 		return code;
 	}
 	
-	private void checkDate(Date date) {
+	public void checkDate(Date date) {
+		if(date == null) {
+			throw new IllegalArgumentException("Invalid date");
+		}
 		Date currentDate = new Date();
 		Date dateBefore = service.getLastCurrencyRateDate();
 		if(date.before(dateBefore)) {
@@ -86,28 +103,20 @@ public class ExchangeManager implements Manager {
 		return new SimpleDateFormat("yyyy-MM-dd").format(date);
 	}
 	
-	private ExchangeRate getResponse() {
-		ExchangeRate rate = null;
+	private ExchangeRateDto getResponse() {
+		ExchangeRateDto rate = null;
 		while(rate == null) { // or flag implemented in class shows that got response
 			if(date.before(service.getLastCurrencyRateDate())) {
 				throw new CurrencyNotFound("Check your file if currency code " + currencyCode + " for date "+ dateFirst + " exists or check if currency code exists. If exists check method getCurrencyRate if return correct in class defined structure of file");
 			}
 			CurrencyRate curRate = repo.getRateByDateAndCode(convertToSqlDate(date), currencyCode);
 			if(curRate != null) {
-				rate = CurrencyExchangeMapper.INSTANCE.mapToExchangeRate(curRate);
-				/*rate = new ExchangeRate();
-				rate.setCurrencyCode(curRate.getCurrencyCode());
-				rate.setCurrencyDate(convertToDate(curRate.getCurrencyDate()));
-				rate.setCurrencyRate(curRate.getCurrencyRate());*/
+				rate = CurrencyExchangeMapper.INSTANCE.mapToExchangeRateDto(curRate);
 			}
 			else {
 				rate = converter.getCurrencyRate(service.getExchangeRate(currencyCode, date));
 				if(rate!=null) {
 					curRate = CurrencyExchangeMapper.INSTANCE.mapToCurrencyRate(rate);
-					/*curRate = new CurrencyRate();
-					curRate.setCurrencyCode(rate.getCurrencyCode());
-					curRate.setCurrencyRate(rate.getCurrencyRate());
-					curRate.setCurrencyDate(convertToSqlDate(rate.getCurrencyDate()));*/
 					repo.addRate(curRate);
 				}
 				else {
@@ -135,5 +144,61 @@ public class ExchangeManager implements Manager {
 		cal.setTime(this.date);
 		cal.add(Calendar.DATE, dayOfDate);
 		return cal.getTime();
+	}
+
+	@Override
+	public BigDecimal exchangeCurrencyToPLNByCountryName(String countryName, Date date, BigDecimal value) {
+		// TODO Auto-generated method stub
+		checkDate(date);
+		CountryDto countryDto = countryService.getCodeByCurrencyName(countryName);
+		this.currencyCode = checkCurrency(countryDto.getCurrencyCode());
+		this.date = date;
+		this.dateFirst = date;
+		countryDto.setCurrencyDate(convertToSqlDate(date));
+		countryDto.setCurrencyToExchange(value);
+		ExchangeRateDto rate = getRateForCountry(countryDto);
+		ExchangedCurrencyDto currency = new ExchangedCurrencyDto(rate.getCurrencyCode(), rate.getCurrencyDate(), value, countryDto.getCurrencyExchanged(), rate.getCurrencyRate(), "PLN");
+		return currency.getCurrencyExchanged();
+	}
+	
+	private ExchangeRateDto getRateForCountry(CountryDto countryDto) {
+		ExchangeRateDto rate = null;
+		while(rate == null) { // or flag implemented in class shows that got response
+			if(date.before(service.getLastCurrencyRateDate())) {
+				throw new CurrencyNotFound("Check your file if currency code " + currencyCode + " for date "+ dateFirst + " exists or check if currency code exists. If exists check method getCurrencyRate if return correct in class defined structure of file");
+			}
+			CurrencyRate curRate = repo.getRateForCountryByDateAndCode(countryDto);
+			if(curRate != null) {
+				rate = CurrencyExchangeMapper.INSTANCE.mapToExchangeRateDto(curRate);
+			}
+			else { 
+				rate = converter.getCurrencyRate(service.getExchangeRate(currencyCode, date));
+				if(rate!=null) {
+					curRate = CurrencyExchangeMapper.INSTANCE.mapToCurrencyRate(rate);
+					addExchangeRateToDb(countryDto, rate);
+				}
+				else {
+					date = setDateDay(-1);// method set Day -1
+					countryDto.setCurrencyDate(convertToSqlDate(date));
+				}
+			}
+		}
+		countryDto.setCurrencyExchanged(countryDto.getCurrencyToExchange().multiply(rate.getCurrencyRate()));
+		return rate;
+	}
+	
+	private void addExchangeRateToDb(CountryDto countryDto, ExchangeRateDto rate) {
+		CurrencyRate curRate = CurrencyExchangeMapper.INSTANCE.mapToCurrencyRate(rate);
+		Long idCurrency = repo.addRate(curRate);
+		Country country = CurrencyExchangeMapper.INSTANCE.mapToCountry(countryDto);
+		Long idCountry = repo.addCountry(country);
+		CurrencyExchangeKey currencyExchangeKey = new CurrencyExchangeKey();
+		currencyExchangeKey.setCountryId(idCountry);
+		currencyExchangeKey.setCurrencyId(idCurrency);
+		CurrencyExchange currencyExchange = new CurrencyExchange();
+		currencyExchange.setId(currencyExchangeKey);
+		currencyExchange.setCountry(country);
+		currencyExchange.setCurrencyRate(curRate);
+		repo.addCurrency(currencyExchange);
 	}
 }
