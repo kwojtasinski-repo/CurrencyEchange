@@ -1,7 +1,7 @@
 package exception;
 
 public class CurrencyExchangeHttpException  extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 6531046031839808032L;
 	private String reason;
 	
 	public CurrencyExchangeHttpException(String message) {

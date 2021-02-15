@@ -20,6 +20,7 @@ import common.CountryDto;
 import common.CurrencyCodesWithCountries;
 import common.ExchangeRateDto;
 import common.ListCurrencies;
+import exception.CsvServiceException;
 import exception.CurrencyNotFound;
 import exception.ParsingExchangeRate;
 import exception.UncheckedIOException;
@@ -48,12 +49,15 @@ public class CsvService implements CountryConverter {
 	        List<CurrencyCodesWithCountries> countriesWithCurrencyCodes = new ArrayList<CurrencyCodesWithCountries>();
 	        iterator.forEachRemaining(countriesWithCurrencyCodes::add);
 	        CurrencyCodesWithCountries countryWithCurrencyCode = countriesWithCurrencyCodes.stream().filter(t->t.getCountryName().equals(countryName.toUpperCase()) && t.getWithdrawalDate().length() == 0).findFirst().orElse(null);
+	        if(countryWithCurrencyCode == null) {
+	        	throw new CsvServiceException("Check your file if " + countryName + " exists");
+	        }
 	        CountryDto countryDto = new CountryDto();
 	        countryDto.setCountryName(countryWithCurrencyCode.getCountryName());
 	        countryDto.setCurrencyCode(countryWithCurrencyCode.getCurrencyCode());
 	        return countryDto;
 		} catch (FileNotFoundException e) {
-			throw new CurrencyNotFound(e.getMessage());
+			throw new CsvServiceException("Check if your file of location "+ file.getPath() +" exists");
 		} catch (IOException e) {
 			throw new UncheckedIOException(e.getMessage());
 		}

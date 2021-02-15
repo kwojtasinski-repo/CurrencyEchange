@@ -9,7 +9,7 @@ import java.sql.Date;
 /*
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2021-02-14T21:41:37+0100",
+    date = "2021-02-15T10:48:21+0100",
     comments = "version: 1.4.2.Final, compiler: javac, environment: Java 15.0.1 (Oracle Corporation)"
 )
 */

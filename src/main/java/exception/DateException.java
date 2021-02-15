@@ -1,7 +1,7 @@
 package exception;
 
 public class DateException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -4699646138295628174L;
 	private String reason;
 	
 	public DateException(String message) {

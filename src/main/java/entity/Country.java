@@ -24,15 +24,19 @@ public class Country {
 	private Long countryId;
 	
 	@Column(name = "country_name")
+	@NotNull
 	private String countryName;
 	
 	@Column(name="currency_to_exchange")
+	@NotNull
 	private BigDecimal currencyToExchange;
 	
 	@Column(name="currency_exchanged")
+	@NotNull
 	private BigDecimal currencyExchanged;
 	
 	@Column(name="currency_rate_date")
+	@NotNull
 	private java.sql.Date currencyDate;
 
 	@OneToMany(mappedBy = "country")

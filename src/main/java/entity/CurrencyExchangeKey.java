@@ -13,7 +13,7 @@ public class CurrencyExchangeKey implements Serializable {
 
     @Column(name = "id_currency_rate")
     private Long currencyId;
-
+    
 	public Long getCountryId() {
 		return countryId;
 	}
@@ -41,7 +41,7 @@ public class CurrencyExchangeKey implements Serializable {
 	
 	@Override
     public int hashCode() {
-        final int prime = 24;
+        final int prime = 31;
         int result = 1;
         result = prime * result + ((countryId == null) ? 0 : countryId.hashCode());
         result = prime * result + ((currencyId == null) ? 0 : currencyId.hashCode());

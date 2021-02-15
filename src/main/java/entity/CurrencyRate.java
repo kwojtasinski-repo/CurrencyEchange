@@ -25,12 +25,15 @@ public class CurrencyRate {
 	private Long currencyId;
 	
 	@Column(name="currency_code")
+	@NotNull
 	private String currencyCode;
 	
 	@Column(name="currency_date")
+	@NotNull
 	private java.sql.Date currencyDate;
 	
-	@Column(name="currency_rate")
+	@Column(name="currency_rate", columnDefinition="Decimal(19,4)")
+	@NotNull
 	private BigDecimal currencyRate;
 	
 	@OneToMany(mappedBy = "currencyRate")

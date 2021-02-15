@@ -1,7 +1,7 @@
 package exception;
 
 public class CurrencyNotFound extends RuntimeException {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -8545822781550879448L;
 	private String reason;
 	
 	public CurrencyNotFound(String message) {

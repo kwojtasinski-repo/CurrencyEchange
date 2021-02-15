@@ -5,11 +5,12 @@ import java.util.List;
 
 import entity.Country;
 import entity.CurrencyExchange;
+import entity.CurrencyExchangeKey;
 import entity.CurrencyRate;
 import common.CountryDto;
 
 public interface CurrencyExchangeRateRepository {
-	void addCurrency(CurrencyExchange currencyExchanged);
+	CurrencyExchangeKey addCurrencyExchange(CurrencyExchange currencyExchanged);
 	Long addCountry(Country country);
 	Long addRate(CurrencyRate rate);
 	CurrencyRate getRateById(Long id);

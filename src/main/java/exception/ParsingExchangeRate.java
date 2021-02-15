@@ -1,7 +1,7 @@
 package exception;
 
 public class ParsingExchangeRate extends RuntimeException  {
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = -1225997025828721164L;
 	private String reason;
 	
 	public ParsingExchangeRate(String message) {

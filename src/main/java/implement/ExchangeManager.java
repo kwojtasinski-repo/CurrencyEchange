@@ -1,5 +1,6 @@
 package implement;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Currency;
@@ -163,11 +164,12 @@ public class ExchangeManager implements Manager {
 	
 	private ExchangeRateDto getRateForCountry(CountryDto countryDto) {
 		ExchangeRateDto rate = null;
+		CurrencyRate curRate = null;
 		while(rate == null) { // or flag implemented in class shows that got response
 			if(date.before(service.getLastCurrencyRateDate())) {
 				throw new CurrencyNotFound("Check your file if currency code " + currencyCode + " for date "+ dateFirst + " exists or check if currency code exists. If exists check method getCurrencyRate if return correct in class defined structure of file");
 			}
-			CurrencyRate curRate = repo.getRateForCountryByDateAndCode(countryDto);
+			curRate = repo.getRateByDateAndCode(countryDto.getCurrencyDate(), countryDto.getCurrencyCode());
 			if(curRate != null) {
 				rate = CurrencyExchangeMapper.INSTANCE.mapToExchangeRateDto(curRate);
 			}
@@ -175,7 +177,7 @@ public class ExchangeManager implements Manager {
 				rate = converter.getCurrencyRate(service.getExchangeRate(currencyCode, date));
 				if(rate!=null) {
 					curRate = CurrencyExchangeMapper.INSTANCE.mapToCurrencyRate(rate);
-					addExchangeRateToDb(countryDto, rate);
+					curRate.setCurrencyId(repo.addRate(curRate));
 				}
 				else {
 					date = setDateDay(-1);// method set Day -1
@@ -183,22 +185,16 @@ public class ExchangeManager implements Manager {
 				}
 			}
 		}
-		countryDto.setCurrencyExchanged(countryDto.getCurrencyToExchange().multiply(rate.getCurrencyRate()));
+		countryDto.setCurrencyExchanged(countryDto.getCurrencyToExchange().multiply(rate.getCurrencyRate()).setScale(2, RoundingMode.HALF_EVEN));
+		addExchangeRateToDb(countryDto, curRate);
 		return rate;
 	}
 	
-	private void addExchangeRateToDb(CountryDto countryDto, ExchangeRateDto rate) {
-		CurrencyRate curRate = CurrencyExchangeMapper.INSTANCE.mapToCurrencyRate(rate);
-		Long idCurrency = repo.addRate(curRate);
+	private void addExchangeRateToDb(CountryDto countryDto, CurrencyRate rate) {
 		Country country = CurrencyExchangeMapper.INSTANCE.mapToCountry(countryDto);
 		Long idCountry = repo.addCountry(country);
-		CurrencyExchangeKey currencyExchangeKey = new CurrencyExchangeKey();
-		currencyExchangeKey.setCountryId(idCountry);
-		currencyExchangeKey.setCurrencyId(idCurrency);
-		CurrencyExchange currencyExchange = new CurrencyExchange();
-		currencyExchange.setId(currencyExchangeKey);
-		currencyExchange.setCountry(country);
-		currencyExchange.setCurrencyRate(curRate);
-		repo.addCurrency(currencyExchange);
+		CurrencyExchangeKey currencyExchangeKey = new CurrencyExchangeKey(idCountry, rate.getCurrencyId());
+		CurrencyExchange currencyExchange = new CurrencyExchange(currencyExchangeKey, country, rate);
+		CurrencyExchangeKey key = repo.addCurrencyExchange(currencyExchange);
 	}
 }

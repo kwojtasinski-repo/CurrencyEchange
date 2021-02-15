@@ -17,6 +17,7 @@ import org.hibernate.query.Query;
 import abstracts.CurrencyExchangeRateRepository;
 import entity.Country;
 import entity.CurrencyExchange;
+import entity.CurrencyExchangeKey;
 import entity.CurrencyRate;
 import common.CountryDto;
 
@@ -30,7 +31,7 @@ public class CurrencyRepository implements CurrencyExchangeRateRepository {
 	}
 	
 	@Override
-	public void addCurrency(CurrencyExchange currencyExchanged) {
+	public CurrencyExchangeKey addCurrencyExchange(CurrencyExchange currencyExchanged) {
 		// TODO Auto-generated method stub
 		Session session = sessionFactory.openSession();
         System.out.println("Creating currency trade");
@@ -45,7 +46,7 @@ public class CurrencyRepository implements CurrencyExchangeRateRepository {
         finally {
         	session.close();
         }
-		//return currencyExchanged.getId();
+		return currencyExchanged.getId();
 	}
 
 	@Override

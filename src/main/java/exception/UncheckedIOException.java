@@ -1,8 +1,8 @@
 package exception;
 
 public class UncheckedIOException extends RuntimeException {
-	private static final long serialVersionUID = 1L;
-private String reason;
+	private static final long serialVersionUID = 4570368932879774732L;
+	private String reason;
 	
 	public UncheckedIOException(String message) {
 		// TODO Auto-generated constructor stub

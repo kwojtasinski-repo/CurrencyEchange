@@ -1,0 +1,10 @@
+-------------------------------------------------------------------------------
+Test set: test.ExchangeManagerTests
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 2.371 s <<< FAILURE! - in test.ExchangeManagerTests
+shouldntReturnExchangedCurrencyFromMockedConverterReturningNull(test.ExchangeManagerTests)  Time elapsed: 2.231 s  <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at test.ExchangeManagerTests.shouldntReturnExchangedCurrencyFromMockedConverterReturningNull(ExchangeManagerTests.java:120)
+

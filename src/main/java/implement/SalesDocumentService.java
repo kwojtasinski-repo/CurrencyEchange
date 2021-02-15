@@ -70,6 +70,6 @@ public class SalesDocumentService {
 			e.printStackTrace();
 		}
 //		System.out.println(s.insert(new BigDecimal("100"), "aud", date));
-		s.countryExchange("Germany", new BigDecimal("100"), date);
+		s.countryExchange("Germany", new BigDecimal("120"), date);
 	}
 }
