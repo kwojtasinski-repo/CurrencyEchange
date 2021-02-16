@@ -158,8 +158,7 @@ public class ExchangeManager implements Manager {
 		countryDto.setCurrencyDate(convertToSqlDate(date));
 		countryDto.setCurrencyToExchange(value);
 		ExchangeRateDto rate = getRateForCountry(countryDto);
-		ExchangedCurrencyDto currency = new ExchangedCurrencyDto(rate.getCurrencyCode(), rate.getCurrencyDate(), value, countryDto.getCurrencyExchanged(), rate.getCurrencyRate(), "PLN");
-		return currency.getCurrencyExchanged();
+		return countryDto.getCurrencyExchanged();
 	}
 	
 	private ExchangeRateDto getRateForCountry(CountryDto countryDto) {
@@ -196,5 +195,21 @@ public class ExchangeManager implements Manager {
 		CurrencyExchangeKey currencyExchangeKey = new CurrencyExchangeKey(idCountry, rate.getCurrencyId());
 		CurrencyExchange currencyExchange = new CurrencyExchange(currencyExchangeKey, country, rate);
 		CurrencyExchangeKey key = repo.addCurrencyExchange(currencyExchange);
+	}
+	
+	@Override
+	public BigDecimal exchangeCurrencyToPLNByCountryNameAndCurrencyCode(String countryName, Date date, BigDecimal money, String currencyCode) {
+		checkDate(date);
+		this.currencyCode = checkCurrency(currencyCode);
+		this.date = date;
+		this.dateFirst = date;
+		CountryDto countryDto = new CountryDto();
+		countryDto.setCurrencyCode(this.currencyCode);
+		countryDto.setCurrencyDate(convertToSqlDate(date));
+		countryDto.setCurrencyToExchange(money);
+		countryDto.setCountryName(countryName);
+		ExchangeRateDto rate = getRateForCountry(countryDto);
+		ExchangedCurrencyDto currency = new ExchangedCurrencyDto(rate.getCurrencyCode(), rate.getCurrencyDate(), money, countryDto.getCurrencyExchanged(), rate.getCurrencyRate(), "PLN");
+		return countryDto.getCurrencyExchanged();
 	}
 }

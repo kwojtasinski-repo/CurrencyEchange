@@ -10,4 +10,5 @@ public interface Manager {
 	ExchangedCurrencyDto exchangeCurrencyToPLN(String currencyCode, Date date, BigDecimal value);
 	ExchangeRateDto getCurrencyRate(String currencyCode, Date date, BigDecimal value);
 	BigDecimal exchangeCurrencyToPLNByCountryName(String countryName, Date date, BigDecimal value);
+	BigDecimal exchangeCurrencyToPLNByCountryNameAndCurrencyCode(String countryName, Date date, BigDecimal money, String currencyCode);
 }
