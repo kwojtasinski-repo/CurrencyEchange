@@ -1,6 +1,5 @@
 package entity;
 
-import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,24 +25,17 @@ public class Country {
 	@Column(name = "country_name")
 	@NotNull
 	private String countryName;
-	
-	@Column(name="currency_to_exchange")
-	@NotNull
-	private BigDecimal currencyToExchange;
-	
-	@Column(name="currency_exchanged")
-	@NotNull
-	private BigDecimal currencyExchanged;
-	
-	@Column(name="currency_rate_date")
-	@NotNull
-	private java.sql.Date currencyDate;
 
 	@OneToMany(mappedBy = "country")
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
 	
 	public Country() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public Country(String countryName) {
+		// TODO Auto-generated constructor stub
+		this.countryName = countryName;
 	}
 	
 	public Long getCountryId() {
@@ -60,29 +52,5 @@ public class Country {
 
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
-	}
-
-	public BigDecimal getCurrencyToExchange() {
-		return currencyToExchange;
-	}
-
-	public void setCurrencyToExchange(BigDecimal currencyToExchange) {
-		this.currencyToExchange = currencyToExchange;
-	}
-
-	public BigDecimal getCurrencyExchanged() {
-		return currencyExchanged;
-	}
-
-	public void setCurrencyExchanged(BigDecimal currencyExchanged) {
-		this.currencyExchanged = currencyExchanged;
-	}
-
-	public java.sql.Date getCurrencyDate() {
-		return currencyDate;
-	}
-
-	public void setCurrencyDate(java.sql.Date currencyDate) {
-		this.currencyDate = currencyDate;
 	}
 }

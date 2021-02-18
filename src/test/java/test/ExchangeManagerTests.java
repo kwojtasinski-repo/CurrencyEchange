@@ -5,19 +5,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 
-import java.io.File;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-import javax.persistence.Column;
-
-import org.apache.log4j.spi.RepositorySelector;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,25 +20,15 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import abstracts.CountryConverter;
-import abstracts.CurrencyExchangeMapper;
-import abstracts.CurrencyExchangeRateRepository;
-import abstracts.DataConverter;
 import abstracts.Service;
-import common.CountryDto;
-import common.ExchangeRateDto;
-import common.ExchangedCurrencyDto;
-import entity.Country;
-import entity.CurrencyExchange;
-import entity.CurrencyExchangeKey;
 import entity.CurrencyRate;
 import exception.CurrencyNotFound;
 import exception.DateException;
-import implement.CsvService;
+import implement.CurrencyDatabaseService;
 import implement.ExchangeManager;
 import implement.ExchangeWebServiceNBP;
 import implement.JsonConverter;
-import implement.SalesDocumentService;
-import repository.CurrencyRepository;
+import repository.CurrencyRepositoryImpl;
 
 /**
  * Unit test for simple App.
@@ -59,7 +43,7 @@ public class ExchangeManagerTests {
 	private Service mockService;
 
 	@Mock
-	private CurrencyRepository mockRepo;
+	private CurrencyRepositoryImpl mockRepo;
 
 	@Mock
 	private CountryConverter mockCountryConverter;
@@ -76,10 +60,10 @@ public class ExchangeManagerTests {
 	}
 
 	@Test
-	public void shouldBeInvalidCurrency() {
+	public void should_be_invalid_currency() {
 		// given
 		String currencyCode = "T";
-		ExchangeManager manager = new ExchangeManager(mockService, json, mockRepo);
+		ExchangeManager manager = new ExchangeManager(mockService);
 
 		// then
 		assertThatThrownBy(() -> manager.checkCurrency(currencyCode)).isInstanceOf(IllegalArgumentException.class)
@@ -87,10 +71,10 @@ public class ExchangeManagerTests {
 	}
 
 	@Test
-	public void shouldntFoundCurrency() throws ParseException {
+	public void shouldnt_found_currency() throws ParseException {
 		// given
 		String currencyCode = "TSF";
-		ExchangeManager manager = new ExchangeManager(mockService, json, mockRepo);
+		ExchangeManager manager = new ExchangeManager(mockService);
 
 		// then
 		assertThatThrownBy(() -> manager.checkCurrency(currencyCode)).isInstanceOf(CurrencyNotFound.class)
@@ -98,14 +82,14 @@ public class ExchangeManagerTests {
 	}
 
 	@Test
-	public void shouldntAcceptDate() throws ParseException {
+	public void shouldnt_accept_date() throws ParseException {
 		// given
 		String dateStringAfter = "2121-02-10";
 		String dateStringBefore = "1921-02-04";
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		final Date date = format.parse(dateStringBefore);
 		Date dateBefore = format.parse("2002-01-02");
-		ExchangeManager manager = new ExchangeManager(mockService, json, mockRepo);
+		ExchangeManager manager = new ExchangeManager(mockService);
 		when(mockService.getLastCurrencyRateDate()).thenReturn(dateBefore);
 
 		// then
@@ -118,7 +102,7 @@ public class ExchangeManagerTests {
 	}
 
 	@Test
-	public void shouldntReturnExchangedCurrencyFromMockedConverterReturningNull() throws ParseException {
+	public void shouldnt_return_exchanged_currency() throws ParseException {
 		// given
 		String currencyCode = "CHF";
 		String dateCurrency = "2021-02-15";
@@ -126,121 +110,38 @@ public class ExchangeManagerTests {
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date date = format.parse(dateCurrency);
 		Date lastDate = format.parse(lastDateCurrency);
-		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(lastDate);
+		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(json, lastDate);
 		when(json.getCurrencyRate(currencyRate.getExchangeRate(currencyCode, date))).thenReturn(null);
-		CurrencyRepository repo = new CurrencyRepository();
-		BigDecimal cash = new BigDecimal("100.00");
-		ExchangeManager manager = new ExchangeManager(currencyRate, json, repo);
-
+		ExchangeManager manager = new ExchangeManager(currencyRate);
+		
 		// then
-		assertThatThrownBy(() -> manager.exchangeCurrencyToPLN(currencyCode, date, cash))
-				.isInstanceOf(CurrencyNotFound.class)
-				.hasMessage("Check your file if currency code " + currencyCode.toUpperCase() + " for date " + date
-						+ " exists or check if currency code exists. If exists check method getCurrencyRate "
-						+ "if return correct in class defined structure of file", "message");
+		assertThatThrownBy(() -> manager.exchangeCurrencyToPLN(currencyCode, date)).isInstanceOf(CurrencyNotFound.class)
+		.hasMessage("Check your file if date of currency rate exists or check currency code. If exists check method getCurrencyRate if return correct in class defined structure of file", "message");
 	}
 
 	@Test
-	public void shouldReturnCurrencyFromMockedRepositoryReturningObject() throws ParseException {
+	public void should_return_currency() throws ParseException {
 		// given
+		String countryName = "SWITZERLAND";
 		String currencyCode = "CHF";
 		String dateCurrency = "2021-02-10";
 		String lastDateCurrency = "2021-02-09";
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date date = format.parse(dateCurrency);
 		Date lastDate = format.parse(lastDateCurrency);
-		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(lastDate);
-		DataConverter jsonConverter = new JsonConverter();
-		CurrencyRate curRate = new CurrencyRate();
-		curRate.setCurrencyId(1L);
-		curRate.setCurrencyCode(currencyCode);
-		curRate.setCurrencyDate(new java.sql.Date(date.getTime()));
-		curRate.setCurrencyRate(new BigDecimal("4.20"));
-		when(mockRepo.getRateByDateAndCode(new java.sql.Date(lastDate.getTime()), currencyCode)).thenReturn(curRate);
-		BigDecimal cash = new BigDecimal("100.00");
-		ExchangeManager manager = new ExchangeManager(currencyRate, jsonConverter, mockRepo);
+		BigDecimal rate = new BigDecimal("4.20");
+		CurrencyRate currencyRateExpected = new CurrencyRate(currencyCode, date, rate);
+		when(mockRepo.getRateForCountryByDateAndCode(countryName, lastDate, currencyCode)).thenReturn(currencyRateExpected);
+		CurrencyDatabaseService dbService = new CurrencyDatabaseService(mockService, mockRepo, lastDate);
+		ExchangeManager manager = new ExchangeManager(dbService);
 
 		// when
-		ExchangedCurrencyDto currency = manager.exchangeCurrencyToPLN(currencyCode, lastDate, cash);
+		CurrencyRate currencyRateActual = manager.exchangeCurrencyToPLN(currencyCode, lastDate);
 
 		// then
-		assertThat(currency).isNotNull();
-		assertThat(currency.getCurrencyCode()).isEqualTo(curRate.getCurrencyCode());
-		assertThat(currency.getCurrencyDate()).isEqualTo(new Date(curRate.getCurrencyDate().getTime()));
-		assertThat(currency.getCurrencyRate()).isEqualTo(curRate.getCurrencyRate());
-	}
-
-	@Test
-	public void shouldntExchangeCurrencyToPLNByCountryName() throws ParseException {
-		// given
-		String countryName = "Germany";
-		String currencyCode = "EUR";
-		String stringDate = "2021-02-10";
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date dateArchival = format.parse(stringDate);
-		BigDecimal money = new BigDecimal("100");
-		BigDecimal moneyExchanged = new BigDecimal("441.26");
-		CountryDto currencyRateDto = new CountryDto();
-		currencyRateDto.setCurrencyCode(currencyCode);
-		currencyRateDto.setCurrencyDate(new java.sql.Date(dateArchival.getTime()));
-		currencyRateDto.setCountryName(countryName);
-		currencyRateDto.setCurrencyExchanged(moneyExchanged);
-		currencyRateDto.setCurrencyToExchange(money);
-		when(mockCountryConverter.getCodeByCurrencyName(countryName)).thenReturn(currencyRateDto);
-		when(mockRepo.getRateByDateAndCode(currencyRateDto.getCurrencyDate(), currencyRateDto.getCurrencyCode()))
-				.thenReturn(null);
-		when(mockService.getExchangeRate(currencyCode, dateArchival)).thenReturn("");
-		when(mockService.getLastCurrencyRateDate()).thenReturn(dateArchival);
-		DataConverter json = new JsonConverter();
-		ExchangeManager manager = new ExchangeManager(mockService, json, mockRepo, mockCountryConverter);
-
-		// then
-		assertThatThrownBy(() -> manager.exchangeCurrencyToPLNByCountryName(countryName, dateArchival, money))
-				.isInstanceOf(CurrencyNotFound.class)
-				.hasMessage("Check your file if currency code " + currencyCode + " for date " + dateArchival
-						+ " exists or check if currency code exists. If exists check method getCurrencyRate "
-						+ "if return correct in class defined structure of file", "message");
-	}
-
-	@Test
-	public void shouldExchangeCurrencyToPLNByCountryName() throws ParseException {
-		// given
-		String countryName = "Germany";
-		String currencyCode = "EUR";
-		String stringDate = "2021-02-10";
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date dateArchival = format.parse(stringDate);
-		ExchangeWebServiceNBP service = new ExchangeWebServiceNBP(dateArchival);
-		DataConverter jsonConverter = new JsonConverter();
-		BigDecimal money = new BigDecimal("100");
-		BigDecimal moneyExchanged = new BigDecimal("441.26");
-		BigDecimal rate = new BigDecimal("4.4126");
-		Long id = 1L;
-		CurrencyRate currencyRate = new CurrencyRate();
-		currencyRate.setCurrencyCode(currencyCode);
-		currencyRate.setCurrencyDate(new java.sql.Date(dateArchival.getTime()));
-		currencyRate.setCurrencyId(id);
-		currencyRate.setCurrencyRate(rate);
-		CountryDto countryDto = new CountryDto();
-		countryDto.setCurrencyCode(currencyCode);
-		countryDto.setCurrencyDate(new java.sql.Date(dateArchival.getTime()));
-		countryDto.setCountryName(countryName);
-		countryDto.setCurrencyExchanged(moneyExchanged);
-		countryDto.setCurrencyToExchange(money);
-		when(mockCountryConverter.getCodeByCurrencyName(countryName)).thenReturn(countryDto);
-		when(mockRepo.getRateByDateAndCode(new java.sql.Date(dateArchival.getTime()), currencyCode)).thenReturn(currencyRate);
-		Country country = CurrencyExchangeMapper.INSTANCE.mapToCountry(countryDto);
-		when(mockRepo.addCountry(country)).thenReturn(id);
-		CurrencyExchangeKey currencyExchangeKey = new CurrencyExchangeKey(id, id);
-		CurrencyExchange currencyExchange = new CurrencyExchange(currencyExchangeKey, country, currencyRate);
-		when(mockRepo.addCurrencyExchange(currencyExchange)).thenReturn(currencyExchangeKey);
-		ExchangeManager manager = new ExchangeManager(service, jsonConverter, mockRepo, mockCountryConverter);
-
-		// when
-		BigDecimal moneyExch = manager.exchangeCurrencyToPLNByCountryName(countryName, dateArchival, money);
-
-		// then
-		assertThat(moneyExch).isNotNull();
-		assertThat(moneyExch).isEqualTo(money.multiply(rate).setScale(2, RoundingMode.HALF_EVEN));
+		assertThat(currencyRateActual).isNotNull();
+		assertThat(currencyRateActual.getCurrencyCode()).isEqualTo(currencyRateExpected.getCurrencyCode());
+		assertThat(currencyRateActual.getCurrencyDate()).isEqualTo(currencyRateExpected.getCurrencyDate());
+		assertThat(currencyRateActual.getCurrencyRate()).isEqualTo(currencyRateExpected.getCurrencyRate());
 	}
 }

@@ -2,9 +2,11 @@ package abstracts;
 
 import java.util.Date;
 
+import entity.CurrencyRate;
+
 public interface Service {
 	Date getLastCurrencyRateDate();
-	String getExchangeRate(String currencyCode, Date date);
+	CurrencyRate getExchangeRate(String currencyCode, Date date);
 	void setFormat(String format);
 	String getFormat();
 }

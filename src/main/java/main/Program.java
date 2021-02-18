@@ -13,16 +13,13 @@ import java.util.Locale;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import common.ExchangeRateDto;
-import common.ExchangedCurrencyDto;
 import implement.ExchangeManager;
 import implement.ExchangeWebServiceNBP;
 import implement.JsonConverter;
-import abstracts.CurrencyExchangeMapper;
-import abstracts.CurrencyExchangeRateRepository;
+import abstracts.CurrencyRepository;
 import abstracts.DataConverter;
 import abstracts.Service;
-import repository.CurrencyRepository;
+import repository.CurrencyRepositoryImpl;
 import entity.CurrencyExchange;
 import entity.CurrencyRate;
 

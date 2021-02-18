@@ -1,15 +1,14 @@
 package abstracts;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 
 import entity.Country;
 import entity.CurrencyExchange;
 import entity.CurrencyExchangeKey;
 import entity.CurrencyRate;
-import common.CountryDto;
 
-public interface CurrencyExchangeRateRepository {
+public interface CurrencyRepository {
 	CurrencyExchangeKey addCurrencyExchange(CurrencyExchange currencyExchanged);
 	Long addCountry(Country country);
 	Long addRate(CurrencyRate rate);
@@ -26,5 +25,5 @@ public interface CurrencyExchangeRateRepository {
 	List<CurrencyRate> getAllRates();
 	List<Country> getAllCountries();
 	CurrencyRate getRateByDateAndCode(Date date, String code);
-	CurrencyRate getRateForCountryByDateAndCode(CountryDto countryDto);
+	CurrencyRate getRateForCountryByDateAndCode(String countryName, Date date, String currencyCode);
 }

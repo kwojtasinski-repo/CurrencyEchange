@@ -7,14 +7,13 @@ import java.io.File;
 
 import org.junit.Test;
 
-import common.CountryDto;
 import exception.CsvServiceException;
 import implement.CsvService;
 
 public class CsvServiceTests {
 	
 	@Test
-	public void shouldntReturnCountryDto() {
+	public void shouldnt_return_country_name() {
 		//given
 		File file = new File("C:\\Projects\\ExchangesRate\\src\\main\\java\\implement\\codes-all_csv.csv");
 		CsvService csv = new CsvService(file);
@@ -28,7 +27,7 @@ public class CsvServiceTests {
 	}
 	
 	@Test
-	public void shouldThrowCsvServiceException() {
+	public void should_throw_csv_service_exception() {
 		//given
 		File file = new File("C:\\Projects\\ExchangesRate\\src\\main\\java\\implement\\codes");
 		CsvService csv = new CsvService(file);
@@ -42,18 +41,20 @@ public class CsvServiceTests {
 	}
 	
 	@Test
-	public void shouldReturnCountryDto() {
+	public void should_return_country_name() {
 		//given
 		File file = new File("C:\\Projects\\ExchangesRate\\src\\main\\java\\implement\\codes-all_csv.csv");
 		CsvService csv = new CsvService(file);
 		String countryName = "Poland";
+		String notExpectedCurrencyCode = "USD";
 		String expectedCurrencyCode = "PLN";
 		
 		//when
-		CountryDto countryDto = csv.getCodeByCurrencyName(countryName);
+		String currencyCode = csv.getCodeByCurrencyName(countryName);
 		
 		//then
-		assertThat(countryDto.getCountryName().equals(countryName.toUpperCase()));
-		assertThat(countryDto.getCurrencyCode().equals(expectedCurrencyCode));
+		assertThat(currencyCode).isNot(null);
+		assertThat(currencyCode.equals(expectedCurrencyCode));
+		assertThat(!currencyCode.equals(notExpectedCurrencyCode));
 	}
 }

@@ -11,6 +11,13 @@
         <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/CurrencyExchange</property>
         <property name="hibernate.connection.username">postgres</property>
         <property name="hibernate.connection.password">admin</property>
+        
+         <!-- Connection settings -->
+        <property name="hibernate.c3p0.min_size">5</property>
+		<property name="hibernate.c3p0.max_size">20</property>
+		<property name="hibernate.c3p0.timeout">1800</property>
+	    <property name="hibernate.c3p0.idle_test_periods">3000</property>       
+
  
         <!-- SQL dialect -->
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>

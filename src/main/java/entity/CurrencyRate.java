@@ -39,6 +39,16 @@ public class CurrencyRate {
 	@OneToMany(mappedBy = "currencyRate")
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
 	
+	public CurrencyRate() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public CurrencyRate(String currencyCode, java.util.Date currencyDate, BigDecimal currencyRate) {
+		this.currencyCode = currencyCode;
+		this.currencyDate = new java.sql.Date(currencyDate.getTime());
+		this.currencyRate = currencyRate;
+	}
+	
 	public Long getCurrencyId() {
 		return currencyId;
 	}
@@ -59,8 +69,8 @@ public class CurrencyRate {
 		return currencyDate;
 	}
 	
-	public void setCurrencyDate(java.sql.Date currencyDate) {
-		this.currencyDate = currencyDate;
+	public void setCurrencyDate(java.util.Date currencyDate) {
+		this.currencyDate = new java.sql.Date(currencyDate.getTime());
 	}
 	
 	public BigDecimal getCurrencyRate() {

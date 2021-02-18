@@ -7,8 +7,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import common.ExchangeRateDto;
-import exception.CurrencyExchangeHttpException;
+import entity.CurrencyRate;
 import exception.ParsingExchangeRate;
 import implement.JsonConverter;
 
@@ -18,7 +17,7 @@ public class JsonConverterTests {
     public final ExpectedException exception = ExpectedException.none();
 
 	@Test
-	public void shouldntConvertToObject() {
+	public void shouldnt_convert_to_object() {
 		//given
 		JsonConverter json = new JsonConverter();
 		String data = "	{tst}";
@@ -29,7 +28,7 @@ public class JsonConverterTests {
 	}
 	
 	@Test
-	public void shouldThrowParsingExchangeRate() {
+	public void should_throw_parsing_exchange_rate() {
 		//given
 		JsonConverter json = new JsonConverter();
 		String data = "abc";
@@ -40,15 +39,15 @@ public class JsonConverterTests {
 	}
 	
 	@Test
-	public void shouldReturnNull() {
+	public void should_return_null() {
 		//given
 		JsonConverter json = new JsonConverter();
 		String data = "";
 		
 		//when
-		ExchangeRateDto dto = json.getCurrencyRate(data);
+		CurrencyRate currencyRate = json.getCurrencyRate(data);
 		
 		//then
-		assertThat(dto).isNull();
+		assertThat(currencyRate).isNull();
 	}
 }

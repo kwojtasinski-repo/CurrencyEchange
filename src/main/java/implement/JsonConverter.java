@@ -5,22 +5,23 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import abstracts.DataConverter;
-import common.ExchangeRateDto;
 import common.ExchangeRatesSeriesJson;
+import entity.CurrencyRate;
 import exception.ParsingExchangeRate;
 
 public class JsonConverter implements DataConverter {
 
 	@Override
-	public ExchangeRateDto getCurrencyRate(String dataString) {
+	public <String> CurrencyRate getCurrencyRate(String data) {
 		// TODO Auto-generated method stub
 		try {
+			java.lang.String dataString = (java.lang.String) data;
 			if(dataString.length()==0) {
 				return null;
 			}
 			JsonMapper objectMapper = new JsonMapper();
 			ExchangeRatesSeriesJson json = objectMapper.readValue(dataString, ExchangeRatesSeriesJson.class);
-			ExchangeRateDto rateModified = new ExchangeRateDto();
+			CurrencyRate rateModified = new CurrencyRate();
 			rateModified.setCurrencyCode(json.getCode());
 			rateModified.setCurrencyDate(json.getRates().get(0).getEffectiveDate());
 			rateModified.setCurrencyRate(json.getRates().get(0).getMid());
@@ -37,5 +38,4 @@ public class JsonConverter implements DataConverter {
 		// TODO Auto-generated method stub
 		return "json";
 	}
-
 }

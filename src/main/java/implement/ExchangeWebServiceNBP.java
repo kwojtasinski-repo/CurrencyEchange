@@ -8,12 +8,13 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 
+import abstracts.DataConverter;
 import abstracts.Service;
-import common.ExchangeRateDto;
+import entity.CurrencyRate;
 import exception.CurrencyExchangeHttpException;
 import exception.UncheckedIOException;
 
@@ -21,10 +22,13 @@ public class ExchangeWebServiceNBP implements Service {
 	private Date lastCurrencyRateDate;
 	private static final String RATE_URL = "http://api.nbp.pl/api/exchangerates/rates/A/";
 	private String format;
+	private DataConverter converter;
 	
-	public ExchangeWebServiceNBP(Date lastCurrencyRateDate) {
+	public ExchangeWebServiceNBP(DataConverter converter, Date lastCurrencyRateDate) {
 		// TODO Auto-generated constructor stub
 		this.lastCurrencyRateDate = lastCurrencyRateDate;
+		this.converter = converter;
+		this.format = converter.getFormat();
 	}
 	
 	@Override
@@ -34,49 +38,31 @@ public class ExchangeWebServiceNBP implements Service {
 	}
 	
 	@Override 
-	public String getExchangeRate(String currencyCode, Date date) {
+	public CurrencyRate getExchangeRate(String currencyCode, Date date) {
 		// TODO Auto-generated method stub
-		ExchangeRateDto rate = new ExchangeRateDto();
-		rate.setCurrencyCode(currencyCode);
-		rate.setCurrencyDate(date);
-		return getRateFromApi(rate);
+		return getRateFromApi(currencyCode, date);
 	}
 	
 	
 	
-	public String getRateFromApi(ExchangeRateDto rate) {
+	public CurrencyRate getRateFromApi(String currencyCode, Date date) {
 		try {
-			boolean isResponse = false;
 			String response = null;
 			HttpURLConnection apiConnection = null;
-			apiConnection = getApiConnection(RATE_URL + rate.getCurrencyCode() + "/" + setDateFormat(rate.getCurrencyDate()) + "/");
+			apiConnection = getApiConnection(RATE_URL + currencyCode + "/" + setDateFormat(date) + "/");
 			setDefaultHttpUrlConnectionSettings(apiConnection, getFormat());
 			response = getResponseData(apiConnection);
-			return response;
+			if(response.length()==0) {
+				return null;
+			}
+			CurrencyRate currencyRate = converter.getCurrencyRate(response);
+			return currencyRate;
 		} catch (Exception ex) 	{
 			// TODO Auto-generated catch block
 			throw new UncheckedIOException(ex.getMessage());
 		}
 	}
-	
-	private Date setDateDay(Date date, int dayOfDate) { // set Date here not in other scope
-		// TODO Auto-generated method stub
-		//currencyDate - day
-		Calendar cal = Calendar.getInstance();
-		cal.setTime(date);
-		cal.add(Calendar.DATE, dayOfDate);
-		return cal.getTime();
-	}
-	
-	private boolean checkIfResponseContainsData(String data) {
-		if(data.equals("Currency rate for this day doesnt exist")) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	
+
 	private String setDateFormat(Date date) {
 		return new SimpleDateFormat("yyyy-MM-dd").format(date);
 	}
@@ -134,6 +120,8 @@ public class ExchangeWebServiceNBP implements Service {
 		} catch (SocketTimeoutException e) {
 			// TODO Auto-generated catch block
 			throw new CurrencyExchangeHttpException("Connection timed out. Check your url");
+		} catch(UnknownHostException e) {
+			throw new CurrencyExchangeHttpException("Check your internet connection or url address");
 		} catch(IOException ex) {
 			throw new CurrencyExchangeHttpException(ex.getMessage());
 		} catch (Exception e) {
