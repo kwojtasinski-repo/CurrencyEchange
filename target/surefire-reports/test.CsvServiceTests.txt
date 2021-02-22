@@ -1,4 +1,14 @@
 -------------------------------------------------------------------------------
 Test set: test.CsvServiceTests
 -------------------------------------------------------------------------------
-Tests run: 3, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.352 s - in test.CsvServiceTests
+Tests run: 3, Failures: 1, Errors: 1, Skipped: 0, Time elapsed: 0.359 s <<< FAILURE! - in test.CsvServiceTests
+should_return_country_name(test.CsvServiceTests)  Time elapsed: 0.026 s  <<< ERROR!
+exception.CsvServiceException: Check your file if Poland exists
+	at test.CsvServiceTests.should_return_country_name(CsvServiceTests.java:53)
+
+shouldnt_return_country_name(test.CsvServiceTests)  Time elapsed: 0.014 s  <<< FAILURE!
+java.lang.AssertionError: 
+
+Expecting code to raise a throwable.
+	at test.CsvServiceTests.shouldnt_return_country_name(CsvServiceTests.java:24)
+

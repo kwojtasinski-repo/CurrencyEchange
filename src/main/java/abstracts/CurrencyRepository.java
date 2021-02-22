@@ -26,4 +26,5 @@ public interface CurrencyRepository {
 	List<Country> getAllCountries();
 	CurrencyRate getRateByDateAndCode(Date date, String code);
 	CurrencyRate getRateForCountryByDateAndCode(String countryName, Date date, String currencyCode);
+	Country getCountryByCountryName(String countryName);
 }

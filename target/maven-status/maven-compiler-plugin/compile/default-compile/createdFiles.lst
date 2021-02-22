@@ -1,9 +1,7 @@
 common\RatesXml.class
 common\ExchangeRatesSeriesXml$InnerRates.class
 common\RatesJson.class
-repository\CurrencyRepository.class
 entity\CurrencyExchangeKey.class
-abstracts\CurrencyExchangeMapper.class
 abstracts\Service.class
 entity\CurrencyRate.class
 main\Program.class
@@ -13,9 +11,7 @@ common\ListCurrencies.class
 abstracts\Manager.class
 abstracts\DataConverter.class
 common\ExchangeRatesSeriesJson$InnerRates.class
-abstracts\CurrencyExchangeRateRepository.class
 common\CurrencyCodesWithCountries.class
-common\ExchangedCurrencyDto.class
 exception\CurrencyNotFound.class
 exception\ParsingExchangeRate.class
 common\ExchangeRatesSeriesXml.class
@@ -26,10 +22,8 @@ common\ExchangeRatesSeriesJson.class
 implement\ExchangeManager.class
 common\Currencies.class
 implement\JsonConverter.class
-abstracts\CurrencyExchangeMapperImpl.class
 implement\XmlConverter.class
 exception\CurrencyExchangeHttpException.class
-common\ExchangeRateDto.class
 exception\DateException.class
 implement\ExchangeWebServiceNBP.class
 implement\SalesDocumentService.class

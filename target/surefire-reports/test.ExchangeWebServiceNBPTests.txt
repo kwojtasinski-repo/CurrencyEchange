@@ -1,4 +1,36 @@
 -------------------------------------------------------------------------------
 Test set: test.ExchangeWebServiceNBPTests
 -------------------------------------------------------------------------------
-Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.361 s - in test.ExchangeWebServiceNBPTests
+Tests run: 8, Failures: 0, Errors: 8, Skipped: 0, Time elapsed: 0.812 s <<< FAILURE! - in test.ExchangeWebServiceNBPTests
+should_throw_exception_message_invalid_url(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.472 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_throw_exception_message_check_url(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_throw_exception_message404(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_throw_timeout_exception(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_return_null_rate(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_throw_exception_message400(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+should_return_rate(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.002 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+
+TestT(test.ExchangeWebServiceNBPTests)  Time elapsed: 0.001 s  <<< ERROR!
+java.lang.NoSuchMethodError: 'org.mockito.MockingDetails org.mockito.Mockito.mockingDetails(java.lang.Object)'
+	at test.ExchangeWebServiceNBPTests.setUp(ExchangeWebServiceNBPTests.java:41)
+

@@ -25,9 +25,34 @@ public class CsvService implements CountryConverter {
 	}
 	
 	@Override
-	public String getCodeByCurrencyName(String countryName) {
-		// TODO Auto-generated method stub
-		return getCountry(countryName);
+	public String getCodeByCountryName(String countryName) {
+		return getCurrencyCode(countryName.toUpperCase());
+	}
+	
+	@Override
+	public String getCountryByCurrencyName(String currencyName) {
+		return getCountry(currencyName.toUpperCase());
+	}
+	
+	private String getCurrencyCode(String countryName) {
+		try {
+			CsvMapper objectMapper = new CsvMapper();
+			CsvSchema bootstrapSchema = CsvSchema.emptySchema().withHeader();
+	        ObjectReader reader = objectMapper.readerFor(CurrencyCodesWithCountries.class).with(bootstrapSchema);
+	        MappingIterator<CurrencyCodesWithCountries> iterator = reader.readValues(file);
+
+	        List<CurrencyCodesWithCountries> countriesWithCurrencyCodes = new ArrayList<CurrencyCodesWithCountries>();
+	        iterator.forEachRemaining(countriesWithCurrencyCodes::add);
+	        CurrencyCodesWithCountries countryWithCurrencyCode = countriesWithCurrencyCodes.stream().filter(t->t.getCountryName().equals(countryName) && t.getWithdrawalDate().length() == 0).findFirst().orElse(null);
+	        if(countryWithCurrencyCode == null) {
+	        	throw new CsvServiceException("Check your file if " + countryName + " exists");
+	        }
+	        return countryWithCurrencyCode.getCountryName();
+		} catch (FileNotFoundException e) {
+			throw new CsvServiceException("Check if your file of location "+ file.getPath() +" exists");
+		} catch (IOException e) {
+			throw new UncheckedIOException(e.getMessage());
+		}
 	}
 	
 	private String getCountry(String currencyCode) {

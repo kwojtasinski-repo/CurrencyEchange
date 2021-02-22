@@ -1,5 +1,6 @@
 package abstracts;
 
 public interface CountryConverter {
-	<T> T getCodeByCurrencyName(String currencyCode);
+	<T> T getCountryByCurrencyName(String currencyCode);
+	<T> T getCodeByCountryName(String currencyCode);
 }
