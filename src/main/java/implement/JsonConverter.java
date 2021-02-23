@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 
 import abstracts.DataConverter;
 import common.ExchangeRatesSeriesJson;
+import entity.Currency;
 import entity.CurrencyRate;
 import exception.ParsingExchangeRate;
 
@@ -34,7 +35,10 @@ public class JsonConverter implements DataConverter {
 			DateTimeFormatter fIn = DateTimeFormatter.ofPattern( "yyyy-MM-dd" , Locale.GERMANY);  // As a habit, specify the desired/expected locale, though in this case the locale is irrelevant.
 			LocalDate localDate = LocalDate.parse( format.format(json.getRates().get(0).getEffectiveDate()), fIn);
 			ZoneId defaultZoneId = ZoneId.systemDefault();
-			rateModified.setCurrencyCode(json.getCode());
+			Currency currency = new Currency();
+			currency.setCurrencyCode(json.getCode());
+			currency.setCurrencyName(json.getCurrency());
+			rateModified.setCurrency(currency);
 			rateModified.setCurrencyDate(Date.from(localDate.atStartOfDay(defaultZoneId).toInstant()));// json.getRates().get(0).getEffectiveDate());
 			rateModified.setCurrencyRate(json.getRates().get(0).getMid());
 			return rateModified;

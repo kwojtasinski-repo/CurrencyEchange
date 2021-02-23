@@ -45,7 +45,7 @@ public class SalesDocumentService {
 	
 	public static void main(String[] args) {
 		SalesDocumentService s = new SalesDocumentService();
-		String string = "2020-12-24"; // 2020-12-27
+		String string = "2021-02-21"; // 2020-12-27
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date date = new Date(1000L);
 		try {
@@ -54,6 +54,6 @@ public class SalesDocumentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(s.insert(new BigDecimal("500"), "btn", date));
+		System.out.println(s.insert(new BigDecimal("500"), "inr", date));
 	}
 }

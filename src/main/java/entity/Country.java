@@ -5,9 +5,11 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -26,11 +28,18 @@ public class Country {
 	@NotNull
 	private String countryName;
 
-	@OneToMany(mappedBy = "country")
+	@OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
+	
+	@OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
+	private Set<CurrencyCountry> currencies = new HashSet<>();
 	
 	public Country() {
 		// TODO Auto-generated constructor stub
+	}
+	
+	public void addCurrency(CurrencyCountry currencyCountry) {
+		currencies.add(currencyCountry);
 	}
 	
 	public Country(String countryName) {

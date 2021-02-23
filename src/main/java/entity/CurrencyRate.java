@@ -6,9 +6,13 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -24,9 +28,9 @@ public class CurrencyRate {
 	@NotNull
 	private Long currencyId;
 	
-	@Column(name="currency_code")
-	@NotNull
-	private String currencyCode;
+	@ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="id_currency", nullable=false)
+    private Currency currency;
 	
 	@Column(name="currency_date")
 	@NotNull
@@ -36,15 +40,15 @@ public class CurrencyRate {
 	@NotNull
 	private BigDecimal currencyRate;
 	
-	@OneToMany(mappedBy = "currencyRate")
+	@OneToMany(mappedBy = "currencyRate", fetch = FetchType.LAZY)
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
 	
 	public CurrencyRate() {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public CurrencyRate(String currencyCode, java.util.Date currencyDate, BigDecimal currencyRate) {
-		this.currencyCode = currencyCode;
+	public CurrencyRate(Currency currency, java.util.Date currencyDate, BigDecimal currencyRate) {
+		this.currency = currency;
 		this.currencyDate = new java.sql.Date(currencyDate.getTime());
 		this.currencyRate = currencyRate;
 	}
@@ -57,12 +61,12 @@ public class CurrencyRate {
 		this.currencyId = currencyId;
 	}
 	
-	public String getCurrencyCode() {
-		return currencyCode;
+	public Currency getCurrency() {
+		return currency;
 	}
-	
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+
+	public void setCurrency(Currency currency) {
+		this.currency = currency;
 	}
 	
 	public java.sql.Date getCurrencyDate() {

@@ -37,6 +37,8 @@
         <mapping class="entity.Country"/>
         <mapping class="entity.CurrencyExchange"/>
         <mapping class="entity.CurrencyRate"/>
+        <mapping class="entity.Currency"/>
+        <mapping class="entity.CurrencyCountry"/>        
         
     </session-factory>
 </hibernate-configuration>

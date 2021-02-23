@@ -21,6 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import abstracts.CountryConverter;
 import abstracts.Service;
+import entity.Currency;
 import entity.CurrencyRate;
 import exception.CurrencyNotFound;
 import exception.DateException;
@@ -111,7 +112,6 @@ public class ExchangeManagerTests {
 		Date date = format.parse(dateCurrency);
 		Date lastDate = format.parse(lastDateCurrency);
 		ExchangeWebServiceNBP currencyRate = new ExchangeWebServiceNBP(json, lastDate);
-		when(json.getCurrencyRate(currencyRate.getExchangeRate(currencyCode, date))).thenReturn(null);
 		ExchangeManager manager = new ExchangeManager(currencyRate);
 		
 		// then
@@ -130,7 +130,9 @@ public class ExchangeManagerTests {
 		Date date = format.parse(dateCurrency);
 		Date lastDate = format.parse(lastDateCurrency);
 		BigDecimal rate = new BigDecimal("4.20");
-		CurrencyRate currencyRateExpected = new CurrencyRate(currencyCode, date, rate);
+		Currency currency = new Currency();
+		currency.setCurrencyCode(currencyCode);
+		CurrencyRate currencyRateExpected = new CurrencyRate(currency, date, rate);
 		when(mockRepo.getRateForCountryByDateAndCode(countryName, lastDate, currencyCode)).thenReturn(currencyRateExpected);
 		CurrencyDatabaseService dbService = new CurrencyDatabaseService(mockService, mockRepo, lastDate);
 		ExchangeManager manager = new ExchangeManager(dbService);
@@ -140,7 +142,7 @@ public class ExchangeManagerTests {
 
 		// then
 		assertThat(currencyRateActual).isNotNull();
-		assertThat(currencyRateActual.getCurrencyCode()).isEqualTo(currencyRateExpected.getCurrencyCode());
+		assertThat(currencyRateActual.getCurrency().getCurrencyCode()).isEqualTo(currencyRateExpected.getCurrency().getCurrencyCode());
 		assertThat(currencyRateActual.getCurrencyDate()).isEqualTo(currencyRateExpected.getCurrencyDate());
 		assertThat(currencyRateActual.getCurrencyRate()).isEqualTo(currencyRateExpected.getCurrencyRate());
 	}

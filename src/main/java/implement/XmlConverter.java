@@ -6,6 +6,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 import abstracts.DataConverter;
 import common.ExchangeRatesSeriesXml;
+import entity.Currency;
 import entity.CurrencyRate;
 import exception.ParsingExchangeRate;
 
@@ -19,7 +20,10 @@ public class XmlConverter implements DataConverter {
 			XmlMapper objectMapper = new XmlMapper();
 			ExchangeRatesSeriesXml xml = objectMapper.readValue(dataString, ExchangeRatesSeriesXml.class);
 			CurrencyRate rateModified = new CurrencyRate();
-			rateModified.setCurrencyCode(xml.getCode());
+			Currency currency = new Currency();
+			currency.setCurrencyCode(xml.getCode());
+			currency.setCurrencyName(xml.getCurrency());
+			rateModified.setCurrency(currency);
 			rateModified.setCurrencyDate(xml.getRates().get(0).getEffectiveDate());
 			rateModified.setCurrencyRate(xml.getRates().get(0).getMid());
 			return rateModified;

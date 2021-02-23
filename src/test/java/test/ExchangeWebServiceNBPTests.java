@@ -202,7 +202,7 @@ public class ExchangeWebServiceNBPTests {
 
 		//then
 		assertThat(rate).isNotNull();
-		assertThat(rate.getCurrencyCode()).isEqualTo(currencyCode);
+		assertThat(rate.getCurrency().getCurrencyCode()).isEqualTo(currencyCode);
 		assertThat(rate.getCurrencyDate()).isEqualTo(currencyDate);
 	}
 	
