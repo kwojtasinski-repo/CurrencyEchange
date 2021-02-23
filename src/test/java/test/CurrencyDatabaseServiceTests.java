@@ -136,7 +136,7 @@ public class CurrencyDatabaseServiceTests {
 		Date dateTo = format.parse(stringDate);
 		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
 
-		List<CurrencyRate> rates = repo.findRatesWithHigherDifferencePeriod(dateFrom, dateTo);
+		List<Object> rates = repo.findRatesWithHigherDifferencePeriod(dateFrom, dateTo);
 		
 		assertThat(rates.size()).isNotEqualTo(0);
 	}

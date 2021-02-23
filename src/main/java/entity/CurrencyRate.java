@@ -28,7 +28,7 @@ public class CurrencyRate {
 	@NotNull
 	private Long currencyId;
 	
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="id_currency", nullable=false)
     private Currency currency;
 	

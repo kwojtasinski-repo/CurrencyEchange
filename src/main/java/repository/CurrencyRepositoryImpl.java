@@ -16,6 +16,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.TransactionException;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.exception.SQLGrammarException;
 import org.hibernate.query.Query;
 import org.hibernate.tool.schema.spi.SchemaManagementException;
 
@@ -176,20 +177,31 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		delete(currencyCountry);
 	}
 
-	public List<CurrencyRate> findRatesWithHigherDifferencePeriod(java.util.Date dateFrom, java.util.Date dateTo) {
+	public List<Object> findRatesWithHigherDifferencePeriod(java.util.Date dateFrom, java.util.Date dateTo) {
 		// TODO Auto-generated method stub
         Date sqlDateFrom = new java.sql.Date(dateFrom.getTime());
         Date sqlDateTo = new java.sql.Date(dateTo.getTime());
-	    String query = "SELECT cr FROM CurrencyRate cr "
-    					+ "WHERE cr.currencyRate = "
-    					+ "(SELECT min(cr2.currencyRate) FROM CurrencyRate cr2 "
-    					+ "WHERE (cr2.currencyDate >= :dateFrom AND cr2.currencyDate <= :dateTo)) "
-    					+ "GROUP BY cr.id ORDER BY (max(cr.currencyRate) - min(cr.currencyRate)) DESC";
+	    String query = "SELECT cr.currency, MAX(cr.currencyRate-cr2.currencyRate) FROM CurrencyRate cr "
+    					+ " LEFT JOIN CurrencyRate cr2  "
+    					+ "ON cr.currency=cr2.currency AND cr.currencyRate>=cr2.currencyRate "
+    					+ " JOIN cr.currency c ON cr.currency.currencyCodeId = c.currencyCodeId"
+    					+ " WHERE cr2.currencyRate IS NOT NULL "
+    					+ "AND cr.currencyDate BETWEEN :dateFrom AND :dateTo" 
+    					+ " GROUP BY cr.currency, c.currencyCodeId ";	  // sprawdz nazwy czy sa dobrze (tabel, kolumn)
     	Map<String, Object> queryParameters = new HashMap<String, Object>();
     	queryParameters.put("dateFrom", sqlDateFrom);
     	queryParameters.put("dateTo", sqlDateTo);
-    	List<CurrencyRate> currencyRates = getListResult(query, queryParameters);
+    	List<Object> currencyRates = getListResult(query, queryParameters);
 		return currencyRates;
+		/*
+		 * SELECT cr.id_currency, MAX(cr.currency_rate-cr2.currency_rate) as highestDifference 
+FROM currency_rate cr 
+LEFT JOIN currency_rate cr2 
+ON cr.id_currency=cr2.id_currency AND cr.currency_rate>=cr2.currency_rate
+WHERE cr2.currency_rate IS NOT NULL 
+AND cr.currency_date BETWEEN '2000-02-10' AND '2021-02-20'
+GROUP BY cr.id_currency
+		 */
 	}
 	
 	public Object findMaxAndMinRate(java.util.Date dateFrom, java.util.Date dateTo) {
@@ -207,11 +219,11 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 	
 	public List<CurrencyRate> findFiveBestRatesForPlusAndMinus(String currencyCode) {
 		// TODO Auto-generated method stub
-		String query = "SELECT cr FROM CurrencyRate cr WHERE cr.currency.currencyCode = :currencyCode ORDER BY cr.currencyRate desc\r\n";
+		String query = "SELECT cr FROM CurrencyRate cr JOIN FETCH cr.currency WHERE cr.currency.currencyCode = :currencyCode ORDER BY cr.currencyRate desc\r\n";
     	Map<String, Object> queryParametrs = new HashMap<String, Object>();
     	queryParametrs.put("currencyCode", currencyCode);
     	List<CurrencyRate> currencyRates = getListResult(query, queryParametrs, 5);
-    	query = "SELECT cr2 FROM CurrencyRate cr2 WHERE cr2.currency.currencyCode = :currencyCode ORDER BY cr2.currencyRate asc\r\n";
+    	query = "SELECT cr2 FROM CurrencyRate cr2 JOIN FETCH cr2.currency  WHERE cr2.currency.currencyCode = :currencyCode ORDER BY cr2.currencyRate asc\r\n";
     	List<CurrencyRate> currencyRates2 = getListResult(query, queryParametrs, 5);
     	currencyRates.addAll(currencyRates2);
 		return currencyRates;
@@ -469,6 +481,8 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
         	throw new DatabaseException("Unknown entity, check mapping, annotations, getters and setters");
         } catch(SchemaManagementException e) {
         	throw new DatabaseException("Schema-validation: missing table");
+        } catch(SQLGrammarException e) {
+        	throw new DatabaseException(e.getMessage());
         } catch(JDBCException e) {
         	throw new DatabaseException("DatabaseException: could not prepare statement");
         } catch(TransactionException e) {
