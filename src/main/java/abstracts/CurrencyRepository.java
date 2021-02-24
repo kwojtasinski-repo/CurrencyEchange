@@ -31,4 +31,11 @@ public interface CurrencyRepository {
 	Country getCountryByCountryName(String countryName);
 	Currency getCurrencyByCode(String currencyCode);
 	CurrencyCountry addCurrencyCountry(CurrencyCountry currencyCountry);
+	Long addCurrency(Currency currency);
+	Currency getCurrencyById(Long id);
+	CurrencyCountry getCurrencyCountryById(Long id); 	
+	void updateCurrency(Currency currency);
+	void updateCurrencyCountry(CurrencyCountry currencyCountry); 
+	void deleteCurrency(Currency currency);
+	void deleteCurrencyCountry(CurrencyCountry currencyCountry);
 }

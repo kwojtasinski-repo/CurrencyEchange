@@ -54,6 +54,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		return rate.getCurrencyId();
 	}
 
+	@Override
 	public Long addCurrency(Currency currency) {
 		System.out.println("Creating currency");
 		add(currency);
@@ -82,6 +83,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		return currencyRate;
 	}
 	
+	@Override
 	public Currency getCurrencyById(Long id) {
 		// TODO Auto-generated method stub
 		Currency currency = null;
@@ -89,6 +91,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		return currency;
 	}
 	
+	@Override
 	public CurrencyCountry getCurrencyCountryById(Long id) {
 		CurrencyCountry currencyCountry = null;
 		currencyCountry = get(CurrencyCountry.class, id);
@@ -147,11 +150,13 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		update(currencyRate);
 	}
 	
+	@Override
 	public void updateCurrency(Currency currency) {
 		// TODO Auto-generated method stub
 		update(currency);
 	}
 	
+	@Override
 	public void updateCurrencyCountry(CurrencyCountry currencyCountry) {
 		update(currencyCountry);
 	}
@@ -168,11 +173,13 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		delete(rate);
 	}
 	
+	@Override
 	public void deleteCurrency(Currency currency) {
 		// TODO Auto-generated method stub
 		delete(currency);
 	}
 	
+	@Override
 	public void deleteCurrencyCountry(CurrencyCountry currencyCountry) {
 		delete(currencyCountry);
 	}

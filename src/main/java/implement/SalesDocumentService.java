@@ -20,7 +20,7 @@ public class SalesDocumentService {
 	public BigDecimal insert(BigDecimal money, String currencyCode, Date date) {
 		// TODO Auto-generated method stub
 		currencyCode = currencyCode.toUpperCase();
-		String string = "2002-01-02"; // 2021-02-05   2002-01-02
+		String string = "2002-01-02"; //  2002-01-02
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date dateArchival = new Date(1000L);
 		try {
@@ -40,12 +40,16 @@ public class SalesDocumentService {
 		ExchangeManager manager = new ExchangeManager(dbService);
 		CurrencyRate rate = manager.exchangeCurrencyToPLN(currencyCode, date);
 		BigDecimal currency = money.multiply(rate.getCurrencyRate());
+		//repository.findCountryWithCurrencies(2);
+		//repository.findFiveBestRatesForPlusAndMinus(currencyCode);
+		//repository.findMaxAndMinRate(dateArchival, date);
+		//repository.findRatesWithHigherDifferencePeriod(dateArchival, date);
 		return currency;
 	}
 	
 	public static void main(String[] args) {
 		SalesDocumentService s = new SalesDocumentService();
-		String string = "2021-01-21"; // 2020-12-27
+		String string = "2019-12-23"; // 2020-12-27
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date date = new Date(1000L);
 		try {
@@ -54,6 +58,6 @@ public class SalesDocumentService {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println(s.insert(new BigDecimal("500"), "gbp", date));
+		System.out.println(s.insert(new BigDecimal("500"), "inr", date));
 	}
 }

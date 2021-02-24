@@ -1,4 +1,4 @@
-package test;
+package unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -130,7 +130,7 @@ public class CurrencyDatabaseServiceTests {
 	@Test
 	public void find_rates_with_with_highest_difference_in_period() throws ParseException {
 		String stringDate = "2021-02-22";
-		String stringDate2 = "2020-12-24";
+		String stringDate2 = "2000-12-24";
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
 		Date dateFrom = format.parse(stringDate2);
 		Date dateTo = format.parse(stringDate);
