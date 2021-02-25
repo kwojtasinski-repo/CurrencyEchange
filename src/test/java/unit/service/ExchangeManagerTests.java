@@ -10,14 +10,17 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import abstracts.CountryConverter;
 import abstracts.Service;
@@ -52,6 +55,28 @@ public class ExchangeManagerTests {
 	@Rule
 	public final ExpectedException exception = ExpectedException.none();
 
+	protected static Map<String, Object> data;
+
+    @BeforeClass
+    public static void init() throws ParseException {
+    	//put learning mock here, consider add data to map
+    	data = sampleData();
+    }
+	
+    public static Map<String, Object> sampleData() throws ParseException {
+    	Map<String, Object> objects = new HashMap<String, Object>(); 	
+		String currencyCode = "CHF";
+		String dateCurrency = "2021-02-10";
+		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
+		Date date = format.parse(dateCurrency);
+		BigDecimal rate = new BigDecimal("4.20");
+		Currency currency = new Currency();
+		currency.setCurrencyCode(currencyCode);
+		CurrencyRate currencyRateExpected = new CurrencyRate(currency, date, rate);
+		objects.put("should_return_currency_CurrencyRateExpected", currencyRateExpected);
+    	return objects;
+    }
+	
 	/**
 	 * Rigorous Test :-)
 	 */
@@ -124,15 +149,10 @@ public class ExchangeManagerTests {
 		// given
 		String countryName = "SWITZERLAND";
 		String currencyCode = "CHF";
-		String dateCurrency = "2021-02-10";
 		String lastDateCurrency = "2021-02-09";
 		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date date = format.parse(dateCurrency);
 		Date lastDate = format.parse(lastDateCurrency);
-		BigDecimal rate = new BigDecimal("4.20");
-		Currency currency = new Currency();
-		currency.setCurrencyCode(currencyCode);
-		CurrencyRate currencyRateExpected = new CurrencyRate(currency, date, rate);
+		CurrencyRate currencyRateExpected = (CurrencyRate ) data.get("should_return_currency_CurrencyRateExpected");
 		when(mockRepo.getRateForCountryByDateAndCode(countryName, lastDate, currencyCode)).thenReturn(currencyRateExpected);
 		CurrencyDatabaseService dbService = new CurrencyDatabaseService(mockService, mockRepo, lastDate);
 		ExchangeManager manager = new ExchangeManager(dbService);

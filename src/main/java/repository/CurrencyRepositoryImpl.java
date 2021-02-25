@@ -38,6 +38,10 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		sessionFactory = new Configuration().configure("hibernate.cfg.xml").buildSessionFactory();//configure("hibernate.cfg.xml").build();  
 	}
 	
+	public void setSession(SessionFactory sessionFactory) {
+		this.sessionFactory=sessionFactory;
+	}
+	
 	@Override
 	public CurrencyExchangeKey addCurrencyExchange(CurrencyExchange currencyExchanged) {
 		// TODO Auto-generated method stub
@@ -184,7 +188,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
 		delete(currencyCountry);
 	}
 
-	public List<Object> findRatesWithHigherDifferencePeriod(java.util.Date dateFrom, java.util.Date dateTo) {
+	public List<Object[]> findRatesWithHigherDifferencePeriod(java.util.Date dateFrom, java.util.Date dateTo) {
 		// TODO Auto-generated method stub
         Date sqlDateFrom = new java.sql.Date(dateFrom.getTime());
         Date sqlDateTo = new java.sql.Date(dateTo.getTime());
@@ -198,7 +202,7 @@ public class CurrencyRepositoryImpl implements CurrencyRepository {
     	Map<String, Object> queryParameters = new HashMap<String, Object>();
     	queryParameters.put("dateFrom", sqlDateFrom);
     	queryParameters.put("dateTo", sqlDateTo);
-    	List<Object> currencyRates = getListResult(query, queryParameters);
+    	List<Object[]> currencyRates = getListResult(query, queryParameters);
 		return currencyRates;
 		/*
 		 * SELECT cr.id_currency, MAX(cr.currency_rate-cr2.currency_rate) as highestDifference 
@@ -211,7 +215,7 @@ GROUP BY cr.id_currency
 		 */
 	}
 	
-	public Object findMaxAndMinRate(java.util.Date dateFrom, java.util.Date dateTo) {
+	public Object[] findMaxAndMinRate(java.util.Date dateFrom, java.util.Date dateTo) {
 		// TODO Auto-generated method stub
         Date sqlDateFrom = new java.sql.Date(dateFrom.getTime());
         Date sqlDateTo = new java.sql.Date(dateTo.getTime());
@@ -220,7 +224,7 @@ GROUP BY cr.id_currency
     	Map<String, Object> queryParameters = new HashMap<String, Object>();
     	queryParameters.put("dateFrom", sqlDateFrom);
     	queryParameters.put("dateTo", sqlDateTo);
-    	Object values = getSingleResult(query, queryParameters);
+    	Object[] values = getSingleResult(query, queryParameters);
 		return values;
 	}
 	
@@ -230,9 +234,19 @@ GROUP BY cr.id_currency
     	Map<String, Object> queryParametrs = new HashMap<String, Object>();
     	queryParametrs.put("currencyCode", currencyCode);
     	List<CurrencyRate> currencyRates = getListResult(query, queryParametrs, 5);
-    	query = "SELECT cr2 FROM CurrencyRate cr2 JOIN FETCH cr2.currency  WHERE cr2.currency.currencyCode = :currencyCode ORDER BY cr2.currencyRate asc\r\n";
-    	List<CurrencyRate> currencyRates2 = getListResult(query, queryParametrs, 5);
-    	currencyRates.addAll(currencyRates2);
+    	int count = currencyRates.size(); 
+    	if(count<5) {
+    		System.out.println("There is only " + currencyRates.size() + " records");
+    	} else if(count>=5 && count<10) {
+    		System.out.println("There is only " + currencyRates.size() + " records");
+    		query = "SELECT cr2 FROM CurrencyRate cr2 JOIN FETCH cr2.currency  WHERE cr2.currency.currencyCode = :currencyCode ORDER BY cr2.currencyRate asc\r\n";
+	    	List<CurrencyRate> currencyRates2 = getListResult(query, queryParametrs, count-5);
+	    	currencyRates.addAll(currencyRates2);
+    	} else if(count>9) {
+	    	query = "SELECT cr2 FROM CurrencyRate cr2 JOIN FETCH cr2.currency  WHERE cr2.currency.currencyCode = :currencyCode ORDER BY cr2.currencyRate asc\r\n";
+	    	List<CurrencyRate> currencyRates2 = getListResult(query, queryParametrs, 5);
+	    	currencyRates.addAll(currencyRates2);
+    	}
 		return currencyRates;
 	}
 	
@@ -246,11 +260,25 @@ GROUP BY cr.id_currency
 	}
 	
 	@Override
-	public List<CurrencyExchange> getAllCurrencies() {
+	public List<CurrencyExchange> getAllCurrenciesExchanged() {
 		// TODO Auto-generated method stub
         System.out.println("Getting all of objects!");  
         List<CurrencyExchange> currenciesExchanged = loadAllData(CurrencyExchange.class);
 		return currenciesExchanged;
+	}
+	
+	@Override
+	public List<Currency> getAllCurrencies() {
+		System.out.println("Getting all of objects!");  
+        List<Currency> currencies = loadAllData(Currency.class);
+		return currencies;
+	}
+	
+	@Override
+	public List<CurrencyCountry> getAllCurrenciesCountries() {
+		System.out.println("Getting all of objects!");  
+        List<CurrencyCountry> currencies = loadAllData(CurrencyCountry.class);
+		return currencies;
 	}
 
 	@Override
@@ -306,7 +334,7 @@ GROUP BY cr.id_currency
     	Country country = getUniqueResult(query, queryParameters);
 		return country;
 	}
-
+	
 	private <T> List<T> loadAllData(Class<T> type) {
 		Session session = sessionFactory.openSession();
 		List<T> data = new ArrayList<>();
@@ -480,8 +508,10 @@ GROUP BY cr.id_currency
         List<T> object = new ArrayList<T>();
         try {
         	Query<?> query = session.createQuery(queryString);
-        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
-        		query.setParameter(entry.getKey(), entry.getValue());
+        	if(parameters != null) {
+	        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
+	        		query.setParameter(entry.getKey(), entry.getValue());
+	        	}
         	}
         	object = (List<T>) query.getResultList();
         } catch(MappingException e) {

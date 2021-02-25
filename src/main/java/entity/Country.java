@@ -39,7 +39,7 @@ public class Country {
 	}
 	
 	public void addCurrency(CurrencyCountry currencyCountry) {
-		currencies.add(currencyCountry);
+		getCurrencies().add(currencyCountry);
 	}
 	
 	public Country(String countryName) {
@@ -61,5 +61,21 @@ public class Country {
 
 	public void setCountryName(String countryName) {
 		this.countryName = countryName;
+	}
+
+	public Set<CurrencyCountry> getCurrencies() {
+		return currencies;
+	}
+
+	public void setCurrencies(Set<CurrencyCountry> currencies) {
+		this.currencies = currencies;
+	}
+
+	public Set<CurrencyExchange> getExchangings() {
+		return exchangings;
+	}
+
+	public void setExchangings(Set<CurrencyExchange> exchangings) {
+		this.exchangings = exchangings;
 	}
 }

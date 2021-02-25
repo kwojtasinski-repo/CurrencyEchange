@@ -23,7 +23,9 @@ public interface CurrencyRepository {
 	void deleteCountry(Country country);
 	void deleteCurrencyExchange(CurrencyExchange currencyExchanged);
 	void deleteCurrencyRate(CurrencyRate rate);
-	List<CurrencyExchange> getAllCurrencies();
+	List<Currency> getAllCurrencies();
+	List<CurrencyExchange> getAllCurrenciesExchanged();
+	List<CurrencyCountry> getAllCurrenciesCountries();
 	List<CurrencyRate> getAllRates();
 	List<Country> getAllCountries();
 	CurrencyRate getRateByDateAndCode(Date date, String code);

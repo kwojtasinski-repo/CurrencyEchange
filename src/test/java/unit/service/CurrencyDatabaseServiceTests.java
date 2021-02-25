@@ -1,6 +1,9 @@
 package unit.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.atLeast;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -8,16 +11,12 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import entity.Country;
 import entity.Currency;
@@ -79,65 +78,20 @@ public class CurrencyDatabaseServiceTests {
 	}
 	
 	@Test
-	public void find_rate_for_country_by_date_and_currency_code() throws ParseException {
-		String countryName = "AUSTRIA";
-		String currencyCode = "EUR";
-		String stringDate = "2020-12-24";
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date date = format.parse(stringDate);
-		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
-
-		CurrencyRate currencyRate = repo.getRateForCountryByDateAndCode(countryName, date, currencyCode);
+	public void should_add_currency_exchange() {
+		Long countryId = 1L;
+		Long currencyId = 1L;
+		BigDecimal currencyRate = new BigDecimal("3.7512");
+		Country country = new Country();
+		country.setCountryId(countryId);
+		country.setCountryName("DE");
+		CurrencyRate rate = new CurrencyRate();
+		rate.setCurrencyId(currencyId);
+		rate.setCurrencyRate(currencyRate);
+		CurrencyDatabaseService mock = mock(CurrencyDatabaseService.class);
 		
-		assertThat(currencyRate).isNotNull();
-	}
-	
-	@Test//findMaxAndMinRate
-	public void find_max_and_min_value_for_currency_on_period() throws ParseException {
-		String stringDate = "2021-02-22";
-		String stringDate2 = "2020-12-24";
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date dateFrom = format.parse(stringDate2);
-		Date dateTo = format.parse(stringDate);
-		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
-
-		Object results = repo.findMaxAndMinRate(dateFrom, dateTo);
+		mock.addCountryWithRate(country, rate);
 		
-		
-		assertThat(results).isNotNull();
-	}
-	
-	@Test
-	public void find_five_rates_currency_for_plus_and_minus() {
-		String currencyCode = "EUR";
-		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
-
-		List<CurrencyRate> rates = repo.findFiveBestRatesForPlusAndMinus(currencyCode);
-		
-		assertThat(rates.size()).isNotEqualTo(0);
-	}
-	
-	@Test//findMaxAndMinRate
-	public void find_counties_with_amount_currencies() {
-		int countriesAmount = 2;
-		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
-
-		List<Country> countries = repo.findCountryWithCurrencies(countriesAmount);
-		
-		assertThat(countries.size()).isNotEqualTo(0);
-	}
-	
-	@Test
-	public void find_rates_with_with_highest_difference_in_period() throws ParseException {
-		String stringDate = "2021-02-22";
-		String stringDate2 = "2000-12-24";
-		DateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.GERMANY);
-		Date dateFrom = format.parse(stringDate2);
-		Date dateTo = format.parse(stringDate);
-		CurrencyRepositoryImpl repo = new CurrencyRepositoryImpl();
-
-		List<Object> rates = repo.findRatesWithHigherDifferencePeriod(dateFrom, dateTo);
-		
-		assertThat(rates.size()).isNotEqualTo(0);
+		verify(mock, atLeast(1)).addCountryWithRate(country, rate);
 	}
 }

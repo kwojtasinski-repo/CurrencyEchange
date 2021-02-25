@@ -46,7 +46,7 @@ public class JsonConverterTests {
 	}
 	
 	@Test
-	public void should_return_null() {
+	public void should_return_exception() {
 		//given
 		JsonConverter json = new JsonConverter();
 		String data = "";

@@ -64,6 +64,7 @@ public class CsvServiceTests {
 		CsvService csv = new CsvService(file);
 		String countryName = "T";
 		String expectedMessage = "Check your file if " + countryName + " exists";
+
 		//then
 		assertThatThrownBy(() -> csv.getCountryByCurrencyName(countryName))
 		.isInstanceOf(CsvServiceException.class)

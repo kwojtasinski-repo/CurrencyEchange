@@ -12,6 +12,7 @@ C:\Projects\ExchangesRate\src\main\java\abstracts\DataConverter.java
 C:\Projects\ExchangesRate\src\main\java\exception\CurrencyExchangeHttpException.java
 C:\Projects\ExchangesRate\src\main\java\common\ExchangeRatesSeriesJson.java
 C:\Projects\ExchangesRate\src\main\java\entity\Country.java
+C:\Projects\ExchangesRate\src\main\java\entity\CurrencyCountry.java
 C:\Projects\ExchangesRate\src\main\java\entity\CurrencyExchange.java
 C:\Projects\ExchangesRate\src\main\java\repository\CurrencyRepositoryImpl.java
 C:\Projects\ExchangesRate\src\main\java\common\RatesJson.java
@@ -20,6 +21,7 @@ C:\Projects\ExchangesRate\src\main\java\implement\SalesDocumentService.java
 C:\Projects\ExchangesRate\src\main\java\implement\DbConverter.java
 C:\Projects\ExchangesRate\src\main\java\common\ListCurrencies.java
 C:\Projects\ExchangesRate\src\main\java\entity\CurrencyRate.java
+C:\Projects\ExchangesRate\src\main\java\entity\CurrencyCountryKey.java
 C:\Projects\ExchangesRate\src\main\java\common\Currencies.java
 C:\Projects\ExchangesRate\src\main\java\exception\ParsingExchangeRate.java
 C:\Projects\ExchangesRate\src\main\java\implement\ExchangeManager.java
@@ -35,3 +37,4 @@ C:\Projects\ExchangesRate\src\main\java\implement\ExchangeWebServiceNBP.java
 C:\Projects\ExchangesRate\src\main\java\common\ExchangeRatesSeriesXml.java
 C:\Projects\ExchangesRate\src\main\java\abstracts\CountryConverter.java
 C:\Projects\ExchangesRate\src\main\java\exception\DateException.java
+C:\Projects\ExchangesRate\src\main\java\entity\Currency.java
