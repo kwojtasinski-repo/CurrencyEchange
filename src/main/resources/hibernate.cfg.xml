@@ -40,5 +40,9 @@
         <mapping class="entity.Currency"/>
         <mapping class="entity.CurrencyCountry"/>        
         
+		<mapping resource="entity/queries/country.hbm.xml" />
+		<mapping resource="entity/queries/currency.hbm.xml" />
+		<mapping resource="entity/queries/currencyExchange.hbm.xml" />
+		<mapping resource="entity/queries/currencyRate.hbm.xml" />
     </session-factory>
 </hibernate-configuration>

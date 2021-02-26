@@ -252,10 +252,11 @@ GROUP BY cr.id_currency
 	
 	public List<Country> findCountryWithCurrencies(int amount) {
 		// TODO Auto-generated method stub
-	    String query = "SELECT c FROM Country c WHERE size(c.currencies) >= :amount";
+	    //String query = "SELECT c FROM Country c WHERE size(c.currencies) >= :amount";
+		String query = "COUNTRY_WITH_AMOUNT_CURRENCIES";
     	Map<String, Object> queryParameters = new HashMap<String, Object>();
     	queryParameters.put("amount", amount);
-    	List<Country> countries = getListResult(query, queryParameters);
+    	List<Country> countries = getListResultNamedQuery(query, queryParameters);
 		return countries;
 	}
 	
@@ -431,6 +432,32 @@ GROUP BY cr.id_currency
 		return (T) object;
 	}
 	
+	private <T> T getSingleResultNamedQuery(String queryString, Map<String,Object> parameters) {
+		Session session = sessionFactory.openSession();
+        T object = null;
+        try {
+    		Query<?> query = session.createNamedQuery(queryString);
+        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
+        		query.setParameter(entry.getKey(), entry.getValue());
+        	}
+        	object = (T) query.getSingleResult();
+        } catch(MappingException e) {
+        	throw new DatabaseException("Unknown entity, check mapping, annotations, getters and setters");
+        } catch(SchemaManagementException e) {
+        	throw new DatabaseException("Schema-validation: missing table");
+        } catch(JDBCException e) {
+        	throw new DatabaseException("DatabaseException: could not prepare statement");
+        } catch(TransactionException e) {
+	    	throw new DatabaseException("Transaction was marked for rollback only; cannot commit");
+	    } catch(Exception e) {
+	    	throw new UncheckedIOException("An attempt to load uninitialized data outside an active session");
+	    }
+        finally {
+        	session.close();
+        }
+		return (T) object;
+	}
+	
 	private <T> void update(T object) {
 		Session session = sessionFactory.openSession();
         System.out.println("Updating object " + object.getClass().getName());  
@@ -482,6 +509,32 @@ GROUP BY cr.id_currency
         T object = null;
         try {
         	Query<?> query = session.createQuery(queryString);
+        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
+        		query.setParameter(entry.getKey(), entry.getValue());
+        	}
+	    	object = (T) query.uniqueResult();
+        } catch(MappingException e) {
+        	throw new DatabaseException("Unknown entity, check mapping, annotations, getters and setters");
+        } catch(SchemaManagementException e) {
+        	throw new DatabaseException("Schema-validation: missing table");
+        } catch(JDBCException e) {
+        	throw new DatabaseException("DatabaseException: could not prepare statement");
+        } catch(TransactionException e) {
+	    	throw new DatabaseException("Transaction was marked for rollback only; cannot commit");
+	    } catch(Exception e) {
+	    	throw new UncheckedIOException("An attempt to load uninitialized data outside an active session");
+	    }
+        finally {
+        	session.close();
+        }
+		return object;
+	}
+	
+	private <T> T getUniqueResultNamedQuery(String queryString, Map<String,Object> parameters) {
+		Session session = sessionFactory.openSession();
+        T object = null;
+        try {
+        	Query<?> query = session.createNamedQuery(queryString);
         	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
         		query.setParameter(entry.getKey(), entry.getValue());
         	}
@@ -563,4 +616,62 @@ GROUP BY cr.id_currency
         }
 		return object;
 	}
+
+	private <T> List<T> getListResultNamedQuery(String queryString, Map<String,Object> parameters) {
+		Session session = sessionFactory.openSession();
+        List<T> object = new ArrayList<T>();
+        try {
+        	Query<?> query = session.createNamedQuery(queryString);
+        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
+        		query.setParameter(entry.getKey(), entry.getValue());
+        	}
+        	object = (List<T>) query.getResultList();
+        } catch(MappingException e) {
+        	throw new DatabaseException("Unknown entity, check mapping, annotations, getters and setters");
+        } catch(SchemaManagementException e) {
+        	throw new DatabaseException("Schema-validation: missing table");
+        } catch(JDBCException e) {
+        	throw new DatabaseException("DatabaseException: could not prepare statement");
+        } catch(TransactionException e) {
+	    	throw new DatabaseException("Transaction was marked for rollback only; cannot commit");
+	    } catch(QueryException e) {
+	    	throw new DatabaseException(e.getMessage());
+	    } catch(Exception e) {
+	    	throw new UncheckedIOException("An attempt to load uninitialized data outside an active session");
+	    }
+        finally {
+        	session.close();
+        }
+		return object;
+	}
+	
+	private <T> List<T> getListResultNameQuery(String queryString, Map<String,Object> parameters, int maxResult) {
+		Session session = sessionFactory.openSession();
+        List<T> object = new ArrayList<T>();
+        try {
+        	Query<?> query = session.createNamedQuery(queryString);
+        	for(Map.Entry<String, Object> entry : parameters.entrySet()) {
+        		query.setParameter(entry.getKey(), entry.getValue());
+        	}
+        	query.setMaxResults(maxResult);
+        	object = (List<T>) query.getResultList();
+        } catch(MappingException e) {
+        	throw new DatabaseException("Unknown entity, check mapping, annotations, getters and setters");
+        } catch(SchemaManagementException e) {
+        	throw new DatabaseException("Schema-validation: missing table");
+        } catch(JDBCException e) {
+        	throw new DatabaseException("DatabaseException: could not prepare statement");
+        } catch(TransactionException e) {
+	    	throw new DatabaseException("Transaction was marked for rollback only; cannot commit");
+	    } catch(QueryException e) {
+	    	throw new DatabaseException(e.getMessage());
+	    } catch(Exception e) {
+	    	throw new UncheckedIOException("An attempt to load uninitialized data outside an active session");
+	    }
+        finally {
+        	session.close();
+        }
+		return object;
+	}
 }
+/// TODO implement for entities abstract DAO
