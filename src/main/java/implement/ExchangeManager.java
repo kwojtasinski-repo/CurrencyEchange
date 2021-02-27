@@ -11,11 +11,11 @@ import abstracts.CountryConverter;
 import abstracts.DataConverter;
 import abstracts.Manager;
 import abstracts.Service;
+import dao.CurrencyRepositoryImpl;
 import entity.Country;
 import entity.CurrencyRate;
 import exception.CurrencyNotFound;
 import exception.DateException;
-import repository.CurrencyRepositoryImpl;
 
 public class ExchangeManager implements Manager {
 	private Service service;

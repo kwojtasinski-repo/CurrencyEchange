@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,8 +18,10 @@ import com.sun.istack.NotNull;
 
 @Entity
 @Table(name = "CURRENCY")
-public class Currency {
+public class Currency implements Serializable {
 	
+	private static final long serialVersionUID = -7147697261773739949L;
+
 	@Id
 	@Column(name = "id_currency")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,7 +34,7 @@ public class Currency {
 	@Column(name="currency_code")
 	private String currencyCode;
 	
-	@OneToMany(mappedBy = "currency")
+	@OneToMany(mappedBy = "currency", cascade = CascadeType.REMOVE)
 	private Set<CurrencyCountry> countryWithCurrencies = new HashSet<>();
 	
 	public Long getId() {

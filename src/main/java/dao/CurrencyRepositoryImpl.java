@@ -1,4 +1,4 @@
-package repository;
+package dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -674,4 +674,4 @@ GROUP BY cr.id_currency
 		return object;
 	}
 }
-/// TODO implement for entities abstract DAO
+/// TODO implement for entities abstract DAO, entity manager try to implement

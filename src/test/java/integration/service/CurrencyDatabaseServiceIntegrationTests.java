@@ -26,19 +26,30 @@ import org.hibernate.cfg.Configuration;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
+import dao.CountryDao;
+import dao.CurrencyDao;
+import dao.CurrencyRateDao;
+import dao.CurrencyRepositoryImpl;
 import entity.Country;
 import entity.Currency;
 import entity.CurrencyCountry;
 import entity.CurrencyExchange;
 import entity.CurrencyRate;
-import repository.CurrencyRepositoryImpl;
+import service.CountryService;
+import service.CurrencyRateService;
+import service.CurrencyService;
 
 public class CurrencyDatabaseServiceIntegrationTests {
     protected static SessionFactory sessionFactory;
     protected static CurrencyRepositoryImpl repo;
     protected static Map<String, Object> data;
+    protected static CountryDao countryDao;
+    protected static CurrencyDao currencyDao;
+    protected static CurrencyRateDao currencyRateDao;
+    protected static CountryService countryService;
+    protected static CurrencyService currencyService;
+    protected static CurrencyRateService currencyRateService;
 
     @BeforeClass
     public static void init() throws FileNotFoundException, SQLException {
@@ -200,7 +211,7 @@ public class CurrencyDatabaseServiceIntegrationTests {
 		
 		assertThat(count).isEqualTo(expectedCount);
     }
-    
+        
     @AfterClass
     public static void tearDown(){
         sessionFactory.close();

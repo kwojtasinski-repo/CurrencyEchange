@@ -19,7 +19,7 @@ import implement.JsonConverter;
 import abstracts.CurrencyRepository;
 import abstracts.DataConverter;
 import abstracts.Service;
-import repository.CurrencyRepositoryImpl;
+import dao.CurrencyRepositoryImpl;
 import entity.CurrencyExchange;
 import entity.CurrencyRate;
 

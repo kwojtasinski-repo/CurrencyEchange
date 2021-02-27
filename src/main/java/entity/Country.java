@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -17,7 +19,10 @@ import com.sun.istack.NotNull;
 
 @Entity
 @Table(name = "COUNTRY")
-public class Country {
+public class Country implements Serializable {
+	
+	private static final long serialVersionUID = -3236921240216741430L;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@NotNull
@@ -28,10 +33,10 @@ public class Country {
 	@NotNull
 	private String countryName;
 
-	@OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "country", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
 	
-	@OneToMany(mappedBy = "country", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "country", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
 	private Set<CurrencyCountry> currencies = new HashSet<>();
 	
 	public Country() {

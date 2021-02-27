@@ -1,5 +1,7 @@
 package entity;
 
+import java.io.Serializable;
+
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -9,8 +11,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "CURRENCY_COUNTRY")
-public class CurrencyCountry {
+public class CurrencyCountry implements Serializable {
 	
+	private static final long serialVersionUID = -7754221382723090495L;
+
 	@EmbeddedId
 	private CurrencyCountryKey id;
 

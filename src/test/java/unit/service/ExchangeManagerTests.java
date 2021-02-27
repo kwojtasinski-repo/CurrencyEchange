@@ -24,6 +24,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 import abstracts.CountryConverter;
 import abstracts.Service;
+import dao.CurrencyRepositoryImpl;
 import entity.Currency;
 import entity.CurrencyRate;
 import exception.CurrencyNotFound;
@@ -32,7 +33,6 @@ import implement.CurrencyDatabaseService;
 import implement.ExchangeManager;
 import implement.ExchangeWebServiceNBP;
 import implement.JsonConverter;
-import repository.CurrencyRepositoryImpl;
 
 /**
  * Unit test for simple App.

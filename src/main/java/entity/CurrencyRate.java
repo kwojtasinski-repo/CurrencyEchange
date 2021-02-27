@@ -1,9 +1,11 @@
 package entity;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -20,15 +22,17 @@ import com.sun.istack.NotNull;
 
 @Entity
 @Table(name = "CURRENCY_RATE")
-public class CurrencyRate {
+public class CurrencyRate implements Serializable {
 	
+	private static final long serialVersionUID = 690055885142562289L;
+
 	@Id
 	@Column(name = "id_currency_rate")
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@NotNull
 	private Long currencyId;
 	
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name="id_currency", nullable=false)
     private Currency currency;
 	
@@ -40,7 +44,7 @@ public class CurrencyRate {
 	@NotNull
 	private BigDecimal currencyRate;
 	
-	@OneToMany(mappedBy = "currencyRate", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "currencyRate", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	private Set<CurrencyExchange> exchangings = new HashSet<>();
 	
 	public CurrencyRate() {

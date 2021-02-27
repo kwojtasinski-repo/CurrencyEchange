@@ -18,12 +18,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 
+import dao.CurrencyRepositoryImpl;
 import entity.Country;
 import entity.Currency;
 import entity.CurrencyRate;
 import implement.CurrencyDatabaseService;
 import implement.FileService;
-import repository.CurrencyRepositoryImpl;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CurrencyDatabaseServiceTests {
