@@ -39,17 +39,7 @@ public class CountryDao implements Dao<Country> {
 
 	@Override
 	public void save(Country country) {
-		//executeInsideTransaction(entityManager -> entityManager.persist(country));
-		EntityTransaction tx = entityManager.getTransaction();
-        try {
-            tx.begin();
-            entityManager.persist(country);
-            tx.commit(); 
-        }
-        catch (RuntimeException e) {
-            tx.rollback();
-            throw e;
-        }
+		executeInsideTransaction(entityManager -> entityManager.persist(country));
 	}
 
 	@Override
@@ -62,7 +52,7 @@ public class CountryDao implements Dao<Country> {
 		executeInsideTransaction(entityManager -> entityManager.remove(country));
 	}
 
-	@Transactional//po uzyciu tej funkcji cos nie dziala
+	@Transactional
 	private void executeInsideTransaction(Consumer<EntityManager> action) {
         EntityTransaction tx = entityManager.getTransaction();
         try {
