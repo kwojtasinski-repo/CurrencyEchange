@@ -1,4 +1,0 @@
--------------------------------------------------------------------------------
-Test set: unit.service.ExchangeWebServiceNBPTests
--------------------------------------------------------------------------------
-Tests run: 7, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 5.412 s - in unit.service.ExchangeWebServiceNBPTests
