@@ -1,2 +1,6 @@
 .settings
 bin/
+target/
+.settings/
+.classpath
+.factorypath
